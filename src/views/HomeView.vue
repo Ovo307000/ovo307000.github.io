@@ -8,19 +8,32 @@ const bio = ref(
 </script>
 
 <template>
-  <div class="home glass">
-    <h1>欢迎来到我的个人简历网站</h1>
-    <p>{{ bio }}</p>
-    <RouterLink to="/about" class="cta-button">了解更多</RouterLink>
+  <div class="home">
+    <div class="content glass">
+      <h1>欢迎来到我的个人简历网站</h1>
+      <div class="bio">
+        <p>{{ bio }}</p>
+      </div>
+      <RouterLink to="/about" class="cta-button">了解更多</RouterLink>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .home {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 120px);
+  padding: 2rem;
+}
+
+.content {
+  max-width: 800px;
   text-align: center;
-  padding: 3rem 2rem;
-  margin-top: 2rem;
-  animation: fadeIn 0.5s ease-out;
+  padding: 3rem;
+  border-radius: 10px;
+  animation: fadeIn 1s ease-out;
 }
 
 h1 {
@@ -29,10 +42,10 @@ h1 {
   color: var(--secondary-color);
 }
 
-p {
+.bio {
   font-size: 1.2rem;
-  max-width: 600px;
-  margin: 0 auto 2rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
 }
 
 .cta-button {
@@ -40,15 +53,18 @@ p {
   background-color: var(--secondary-color);
   color: var(--background-color);
   padding: 0.8rem 1.5rem;
-  text-decoration: none;
-  border-radius: 5px;
+  border-radius: 30px;
   font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   transition: all 0.3s ease;
 }
 
 .cta-button:hover {
   background-color: var(--text-color);
+  color: var(--secondary-color);
   transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(100, 255, 218, 0.2);
 }
 
 @keyframes fadeIn {
@@ -59,6 +75,24 @@ p {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .home {
+    padding: 1rem;
+  }
+
+  .content {
+    padding: 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .bio {
+    font-size: 1rem;
   }
 }
 </style>

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import SectionContainer from '@/components/SectionContainer.vue'
+import type { PersonalInfo, Education } from '@/types'
 
-const personalInfo = ref({
+const personalInfo = ref<PersonalInfo>({
   name: '张三',
   phone: '19155126666',
   email: 'solowzl@outlook.com',
@@ -13,7 +14,7 @@ const careerObjective = ref(
   '寻求 Java 后端开发职位，具备扎实的编程技能与丰富项目经验。希望通过构建高效、稳定的后端系统，提升企业业务效率，在技术创新中不断成长。'
 )
 
-const education = ref([
+const education = ref<Education[]>([
   { school: '安徽工贸学院', major: '软件技术', period: '2020.10 - 2023.06' },
   { school: '安徽财经大学', major: '计算机科学与技术', period: '2024.03 - 2027.06' }
 ])
@@ -46,12 +47,12 @@ const education = ref([
 .about {
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 h1 {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   color: var(--secondary-color);
 }
 
@@ -66,5 +67,15 @@ li {
 
 strong {
   color: var(--secondary-color);
+}
+
+@media (max-width: 768px) {
+  .about {
+    padding: 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
 }
 </style>

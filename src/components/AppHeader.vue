@@ -1,18 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-
-interface NavItem {
-  path: string
-  name: string
-}
-
-const navItems: NavItem[] = [
-  { path: '/', name: '主页' },
-  { path: '/about', name: '关于我' },
-  { path: '/skills', name: '技能' },
-  { path: '/projects', name: '项目经验' }
-]
+import { NAV_ITEMS } from '@/constants/navItems'
 
 const route = useRoute()
 const isMenuOpen = ref(false)
@@ -32,10 +21,11 @@ const toggleMenu = () => {
       </div>
       <div class="nav-links" :class="{ open: isMenuOpen }">
         <RouterLink
-          v-for="item in navItems"
+          v-for="item in NAV_ITEMS"
           :key="item.path"
           :to="item.path"
           :class="{ active: route.path === item.path }"
+          @click="isMenuOpen = false"
         >
           {{ item.name }}
         </RouterLink>
@@ -55,6 +45,7 @@ header {
   height: 60px;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
+  background-color: var(--header-footer-bg);
 }
 
 nav {
@@ -118,16 +109,29 @@ nav a.active {
 }
 
 @media (max-width: 768px) {
+  .menu-icon {
+    display: flex;
+  }
+
   .nav-links {
+    position: absolute;
     top: 60px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background-color: var(--header-footer-bg);
+    padding: 20px;
+    gap: 1rem;
     transform: translateY(-100%);
     opacity: 0;
     transition: all 0.3s ease;
+    pointer-events: none;
   }
 
   .nav-links.open {
     transform: translateY(0);
     opacity: 1;
+    pointer-events: auto;
   }
 
   .menu-icon.open span:nth-child(1) {

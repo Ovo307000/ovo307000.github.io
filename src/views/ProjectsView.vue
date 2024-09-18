@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import SectionContainer from '@/components/SectionContainer.vue'
+import type { Project } from '@/types'
 
-const projects = ref([
+const projects = ref<Project[]>([
   {
     name: 'BigEvent',
     description: '开发了一款在线新闻平台后端，使用 Redis 管理 Token，集成 Minio 实现云存储。',
@@ -56,12 +57,12 @@ const projects = ref([
 .projects {
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 h1 {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   color: var(--secondary-color);
 }
 
@@ -91,5 +92,23 @@ a:hover {
 
 strong {
   color: var(--secondary-color);
+}
+
+@media (max-width: 768px) {
+  .projects {
+    padding: 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+  }
+
+  li {
+    font-size: 0.9rem;
+  }
 }
 </style>

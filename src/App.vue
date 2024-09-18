@@ -29,7 +29,7 @@ import AppFooter from './components/AppFooter.vue'
 
 main {
   flex: 1;
-  padding: 80px 20px 20px; /* 调整顶部 padding 以适应固定的 header */
+  padding: 80px 20px 20px;
   max-width: 1000px;
   margin: 0 auto;
   width: 100%;
@@ -47,7 +47,7 @@ main {
 
 @media (max-width: 768px) {
   main {
-    padding-top: 70px; /* 在移动设备上稍微减少顶部 padding */
+    padding-top: 70px;
   }
 }
 </style>
