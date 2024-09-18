@@ -3,10 +3,14 @@ import { RouterView } from 'vue-router'
 import AppHeader from './components/AppHeader.vue'
 import AppFooter from './components/AppFooter.vue'
 import { useThemeStore } from './stores/theme'
-import { provide } from 'vue'
+import { provide, onMounted } from 'vue'
 
 const themeStore = useThemeStore()
 provide('themeStore', themeStore)
+
+onMounted(() => {
+  themeStore.initTheme()
+})
 </script>
 
 <template>
@@ -14,9 +18,9 @@ provide('themeStore', themeStore)
     <AppHeader />
     <main>
       <RouterView v-slot="{ Component }">
-        <transition name="fade" mode="out-in">
+        <Transition name="fade" mode="out-in">
           <component :is="Component" />
-        </transition>
+        </Transition>
       </RouterView>
     </main>
     <AppFooter />
@@ -30,11 +34,6 @@ provide('themeStore', themeStore)
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  transition:
-    background-color 0.3s,
-    color 0.3s;
-  background-color: var(--background-color);
-  color: var(--text-color);
 }
 
 main {
@@ -43,14 +42,11 @@ main {
   max-width: 1000px;
   margin: 0 auto;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 0.3s ease;
 }
 
 .fade-enter-from,

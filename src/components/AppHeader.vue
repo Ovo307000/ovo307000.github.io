@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, inject } from 'vue'
+import { ref, inject, computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { NAV_ITEMS } from '@/constants/navItems'
 import GradientDivider from './GradientDivider.vue'
@@ -12,22 +12,22 @@ const themeStore = inject('themeStore') as ReturnType<typeof useThemeStore>
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
 }
+
+const activeClass = computed(() => (path: string) => (route.path === path ? 'active' : ''))
 </script>
 
 <template>
   <header class="glass">
     <nav>
       <div class="menu-icon" @click="toggleMenu" :class="{ open: isMenuOpen }">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span v-for="n in 3" :key="n"></span>
       </div>
       <div class="nav-links" :class="{ open: isMenuOpen }">
         <RouterLink
           v-for="item in NAV_ITEMS"
           :key="item.path"
           :to="item.path"
-          :class="{ active: route.path === item.path }"
+          :class="activeClass(item.path)"
           @click="isMenuOpen = false"
         >
           {{ item.name }}
