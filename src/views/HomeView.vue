@@ -21,14 +21,17 @@ const bio = ref(
 
 <style scoped>
 .home {
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 120px);
-  padding: 2rem;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
 .content {
+  width: 100%;
   max-width: 800px;
   text-align: center;
   padding: 3rem;
@@ -80,11 +83,11 @@ h1 {
 
 @media (max-width: 768px) {
   .home {
-    padding: 1rem;
+    padding: 0.5rem;
   }
 
   .content {
-    padding: 2rem;
+    padding: 1.5rem;
   }
 
   h1 {

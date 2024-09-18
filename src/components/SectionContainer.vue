@@ -21,6 +21,8 @@ defineProps<{
   margin-bottom: 2rem;
   padding: 1.5rem;
   animation: fadeIn 0.5s ease-out;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .section-heading {
@@ -43,6 +45,12 @@ defineProps<{
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .section-container {
+    padding: 1rem;
   }
 }
 </style>
