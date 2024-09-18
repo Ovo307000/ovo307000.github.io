@@ -2,6 +2,18 @@
 import { ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 
+interface NavItem {
+  path: string
+  name: string
+}
+
+const navItems: NavItem[] = [
+  { path: '/', name: '主页' },
+  { path: '/about', name: '关于我' },
+  { path: '/skills', name: '技能' },
+  { path: '/projects', name: '项目经验' }
+]
+
 const route = useRoute()
 const isMenuOpen = ref(false)
 
@@ -19,12 +31,14 @@ const toggleMenu = () => {
         <span></span>
       </div>
       <div class="nav-links" :class="{ open: isMenuOpen }">
-        <RouterLink to="/" :class="{ active: route.path === '/' }">主页</RouterLink>
-        <RouterLink to="/about" :class="{ active: route.path === '/about' }">关于我</RouterLink>
-        <RouterLink to="/skills" :class="{ active: route.path === '/skills' }">技能</RouterLink>
-        <RouterLink to="/projects" :class="{ active: route.path === '/projects' }"
-          >项目经验</RouterLink
+        <RouterLink
+          v-for="item in navItems"
+          :key="item.path"
+          :to="item.path"
+          :class="{ active: route.path === item.path }"
         >
+          {{ item.name }}
+        </RouterLink>
       </div>
     </nav>
   </header>
@@ -38,7 +52,7 @@ header {
   right: 0;
   z-index: 1000;
   padding: 0 20px;
-  height: 70px;
+  height: 60px;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 }
@@ -104,20 +118,8 @@ nav a.active {
 }
 
 @media (max-width: 768px) {
-  .menu-icon {
-    display: flex;
-  }
-
   .nav-links {
-    position: absolute;
-    top: 70px;
-    left: 0;
-    right: 0;
-    flex-direction: column;
-    background-color: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    padding: 20px;
-    gap: 1rem;
+    top: 60px;
     transform: translateY(-100%);
     opacity: 0;
     transition: all 0.3s ease;
