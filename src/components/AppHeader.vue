@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { NAV_ITEMS } from '@/constants/navItems'
+import GradientDivider from './GradientDivider.vue'
 
 const route = useRoute()
 const isMenuOpen = ref(false)
@@ -31,6 +32,7 @@ const toggleMenu = () => {
         </RouterLink>
       </div>
     </nav>
+    <GradientDivider />
   </header>
 </template>
 
