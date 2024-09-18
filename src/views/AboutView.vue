@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import SectionContainer from '@/components/SectionContainer.vue'
 
 const personalInfo = ref({
   name: '张三',
@@ -21,26 +22,23 @@ const education = ref([
 <template>
   <div class="about">
     <h1>关于我</h1>
-    <section>
-      <h2>个人信息</h2>
+    <SectionContainer title="个人信息">
       <ul>
         <li v-for="(value, key) in personalInfo" :key="key">
           <strong>{{ key }}:</strong> {{ value }}
         </li>
       </ul>
-    </section>
-    <section>
-      <h2>职业目标</h2>
+    </SectionContainer>
+    <SectionContainer title="职业目标">
       <p>{{ careerObjective }}</p>
-    </section>
-    <section>
-      <h2>教育背景</h2>
+    </SectionContainer>
+    <SectionContainer title="教育背景">
       <ul>
         <li v-for="(edu, index) in education" :key="index">
           <strong>{{ edu.school }}</strong> - {{ edu.major }} ({{ edu.period }})
         </li>
       </ul>
-    </section>
+    </SectionContainer>
   </div>
 </template>
 
@@ -48,33 +46,13 @@ const education = ref([
 .about {
   max-width: 800px;
   margin: 0 auto;
-  animation: fadeIn 0.5s ease-out;
+  padding: 2rem;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-section {
+h1 {
+  text-align: center;
   margin-bottom: 2rem;
-  background-color: #ffffff;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-  color: var(--primary-color);
-  border-bottom: 2px solid var(--secondary-color);
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
+  color: var(--secondary-color);
 }
 
 ul {
@@ -87,6 +65,6 @@ li {
 }
 
 strong {
-  color: var(--primary-color);
+  color: var(--secondary-color);
 }
 </style>

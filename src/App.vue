@@ -19,22 +19,7 @@ import AppFooter from './components/AppFooter.vue'
 </template>
 
 <style>
-:root {
-  --primary-color: #3498db;
-  --secondary-color: #2ecc71;
-  --background-color: #f5f7fa;
-  --text-color: #34495e;
-  --header-footer-bg: #2c3e50;
-}
-
-body {
-  font-family: 'Roboto', Arial, sans-serif;
-  line-height: 1.6;
-  color: var(--text-color);
-  margin: 0;
-  padding: 0;
-  background-color: var(--background-color);
-}
+@import './styles/global.css';
 
 .app {
   display: flex;
@@ -44,39 +29,25 @@ body {
 
 main {
   flex: 1;
-  padding: 2rem;
-  max-width: 1200px;
+  padding: 100px 20px 20px;
+  max-width: 1000px;
   margin: 0 auto;
-  background-color: #ffffff;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-}
-
-h1,
-h2,
-h3 {
-  color: var(--primary-color);
-}
-
-a {
-  color: var(--primary-color);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-a:hover {
-  color: var(--secondary-color);
+  width: 100%;
 }
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.5s ease;
 }
 
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+@media (max-width: 768px) {
+  main {
+    padding: 80px 15px 15px;
+  }
 }
 </style>

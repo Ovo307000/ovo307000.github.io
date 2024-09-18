@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import SectionContainer from '@/components/SectionContainer.vue'
 
 const projects = ref([
   {
@@ -38,8 +39,7 @@ const projects = ref([
 <template>
   <div class="projects">
     <h1>项目经验</h1>
-    <div v-for="project in projects" :key="project.name" class="project">
-      <h2>{{ project.name }}</h2>
+    <SectionContainer v-for="project in projects" :key="project.name" :title="project.name">
       <p><strong>描述：</strong>{{ project.description }}</p>
       <p><strong>职责：</strong>{{ project.responsibilities }}</p>
       <p><strong>技术栈：</strong>{{ project.techStack.join(', ') }}</p>
@@ -48,7 +48,7 @@ const projects = ref([
         <li v-for="achievement in project.achievements" :key="achievement">{{ achievement }}</li>
       </ul>
       <p><a :href="project.github" target="_blank">GitHub 源码</a></p>
-    </div>
+    </SectionContainer>
   </div>
 </template>
 
@@ -57,42 +57,17 @@ const projects = ref([
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
-  animation: fadeIn 0.5s ease-out;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--secondary-color);
 }
 
-.project {
-  margin-bottom: 3rem;
-  padding: 1.5rem;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-}
-
-.project:hover {
-  transform: translateY(-5px);
-}
-
-h2,
 h3 {
-  color: var(--primary-color);
-}
-
-h2 {
-  border-bottom: 2px solid var(--secondary-color);
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
+  color: var(--secondary-color);
+  margin-top: 1rem;
 }
 
 ul {
@@ -104,17 +79,17 @@ li {
 }
 
 a {
-  color: var(--primary-color);
+  color: var(--secondary-color);
   text-decoration: none;
   font-weight: bold;
   transition: color 0.3s ease;
 }
 
 a:hover {
-  color: var(--secondary-color);
+  color: var(--primary-color);
 }
 
 strong {
-  color: var(--primary-color);
+  color: var(--secondary-color);
 }
 </style>
