@@ -36,16 +36,13 @@
 .terminal-console { height: 100%; }
 .terminal-emulator { height: 100%; }
 .terminal-input { caret-color: var(--accent); caret-shape: block; }
-.terminal-input-row { position: relative; }
-.terminal-input-row:not(:focus-within):has(.terminal-input:placeholder-shown)::after { content: ''; position: absolute; left: 16px; bottom: 5px; width: 6px; height: 16px; background: var(--accent); animation: terminal-blink 1s steps(1) infinite; }
-.terminal-input-row:not(:focus-within) .terminal-input:placeholder-shown { padding-left: 20px !important; }
 .terminal-input::placeholder { color: var(--muted); opacity: 1; }
+.terminal-input:focus::placeholder { color: transparent; opacity: 0; }
 .terminal-response { margin-top: 8px; }
 .terminal-response .profile-output { margin-top: -8px; }
 .terminal-input-row > span { white-space: nowrap; }
 @keyframes terminal-type { from { width: 0; } }
 @keyframes terminal-line { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes terminal-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 .profile-output > .command { font-size: 15px; line-height: 26px; }
 .portfolio-dialog { padding: 0; border: 0; color: var(--text); background: transparent; width: min(600px, calc(100vw - 48px)); max-width: none; max-height: none; margin: auto; overflow: visible; }
 .portfolio-dialog::backdrop { background: #000; opacity: 1; transition: opacity 200ms ease-out; }

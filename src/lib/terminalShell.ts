@@ -2,6 +2,7 @@ import { content } from './content';
 import { contactOutput, createTerminalFiles, displayDirectory, homeDirectory, resolveTerminalPath } from './terminalFiles';
 import type { TerminalFile } from './terminalFiles';
 import { colorTerminalEntry, terminalColors as colors } from './terminalColors';
+import { completeTerminalInput } from './terminalCompletion';
 
 export type TerminalResult = string | TerminalFile | undefined;
 
@@ -63,15 +64,18 @@ const helpText = ['help  ls [-a] [path]  cd [path]  pwd', 'cat <file>  whoami  c
   'cat ./skills.conf  cat ./education.log', './connect.sh', '',
   'Tab: complete  |  Up/Down: history', 'Try ls -a. Some files are a little shy.'].join('\n');
 
+const HELP_CAT_INTERVAL = 3;
+const helpCat = ['  /\\_/\\', ' ( o.o )', '  > ^ <'].join('\n');
+
 function whoami(files: TerminalFileSystem, option?: string) {
   if (option === '--about') { return files.cat(`${homeDirectory}/about.md`); }
   if (option) { return colors.yellow('Usage: whoami [--about]'); }
   return colors.green(new URL(content.identity.githubUrl).pathname.slice(1));
 }
 
-function createCommands(files: TerminalFileSystem): Record<string, TerminalCommand> {
+function createCommands(files: TerminalFileSystem, onHelp: TerminalCommand['fn']): Record<string, TerminalCommand> {
   const commands: Record<string, TerminalCommand> = {
-    help: { description: 'Show commands', fn: () => colors.cyan(helpText) },
+    help: { description: 'Show commands', usage: 'help [-h]', fn: onHelp },
     ls: { description: 'List files', usage: 'ls [-a] [path]', fn: (...args) => files.ls(...args) },
     cd: { description: 'Change directory', usage: 'cd [path]', fn: value => files.cd(value) },
     pwd: { description: 'Print directory', fn: () => colors.blue(files.pwd()) },
@@ -87,33 +91,25 @@ function createCommands(files: TerminalFileSystem): Record<string, TerminalComma
 
 export function createTerminalShell(onResume: () => void, onDirectory: (path: string) => void, onClear: () => void) {
   const files = new TerminalFileSystem(onResume, onDirectory);
-  const commands = createCommands(files);
+  let helpCycle = 0;
+  function help(...args: string[]) {
+    helpCycle = args.length ? 0 : (helpCycle + 1) % HELP_CAT_INTERVAL;
+    const showCat = (args.length === 1 && args[0] === '-h') || (args.length === 0 && helpCycle === 0);
+    const guide = colors.cyan(helpText);
+    if (!showCat) { return guide; }
+    return [guide, colors.green(helpCat), colors.cyan('Still need help? Meow.')].join('\n\n');
+  }
+  const commands = createCommands(files, help);
   commands.clear = { description: 'Clear the terminal', fn: () => { onClear(); return ''; } };
   function complete(input: string) {
-    const split = input.lastIndexOf(' ');
-    if (split < 0) { return commonPrefix(Object.keys(commands).filter(name => name.startsWith(input)), input); }
-    const argument = input.slice(split + 1);
-    if (input.slice(0, split) === 'whoami' && argument.startsWith('-')) {
-      return input.slice(0, split + 1) + commonPrefix(['--about'].filter(value => value.startsWith(argument)), argument);
-    }
-    const slash = argument.lastIndexOf('/');
-    const parent = argument.slice(0, slash + 1);
-    const fragment = argument.slice(slash + 1);
-    const matches = files.entries(files.path(parent || '.'), true).filter(name => name.startsWith(fragment));
-    return input.slice(0, split + 1) + parent + commonPrefix(matches, fragment);
+    return completeTerminalInput(input, Object.keys(commands), parent => files.entries(files.path(parent), true));
   }
   function execute(input: string): TerminalResult {
     const [name, ...args] = input.trim().split(/\s+/);
     if (!name) { return ''; }
+    if (name !== 'help') { helpCycle = 0; }
     if (!Object.hasOwn(commands, name)) { return colors.red('Command not found. Type help.'); }
     return commands[name].fn(...args);
   }
   return { commands, complete, execute };
-}
-
-function commonPrefix(values: string[], fallback: string) {
-  if (!values.length) { return fallback; }
-  let prefix = values[0];
-  while (!values.every(value => value.startsWith(prefix))) { prefix = prefix.slice(0, -1); }
-  return prefix;
 }

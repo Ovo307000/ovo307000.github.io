@@ -8,6 +8,16 @@
 
 ## 每次更新
 
+父工作区已配置自动同步：父仓库本地设置 `core.hooksPath=.githooks`，每次提交若包含 `website/` 下的改动，`post-commit` 会调用 `scripts/sync-website.ps1`，先在独立网站仓库运行 `npm run check` 和 `npm run build`，再把对应文件提交到 `master` 并推送。推送成功后由现有 GitHub Actions 与 Cloudflare Pages 自动构建。脚本会拒绝夹带未列入父提交的网站工作区改动、已暂存改动、敏感文件或与远端分叉的本地提交。
+
+如果只想人工同步现有全部网站改动，在父工作区运行：
+
+```powershell
+pwsh -File scripts/sync-website.ps1 -All
+```
+
+脚本只在当前克隆生效；重新克隆父工作区后运行一次 `git config core.hooksPath .githooks`。发布失败时保留本地网站提交，修复原因后重跑同一命令；不要强推。以下手动流程保留，用于排查自动同步问题。
+
 在 `C:/Users/solow/OneDrive/Project/Job/Resume/website` 打开终端：
 
 ```powershell

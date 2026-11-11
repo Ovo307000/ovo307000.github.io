@@ -47,15 +47,50 @@
 
 ## 终端命令输出颜色与监控（2026-11-11）
 
-终端高亮需要区分文件语法和命令stdout：Shiki处理YAML、INI、Markdown、Shell和log；`ls`、帮助、身份、路径及错误由ansi-colors4.1.3生成ANSI，统一交给ansi-to-react6.2.6渲染。库解析ANSI，不手写转义解析器或分词正则。目录蓝色、可执行脚本绿色、文件黄色、帮助青色、错误红色，调色与Figma参考149:3202一致。`TerminalAnsi`是唯一渲染入口；补全候选和rawInput历史保持无ANSI文本。console库默认message字体会覆盖父级字体，因此messageStyle显式指定IBM Plex Mono14px/24px，而非只依赖继承。
+本节verification/内的截图和网络JSON为本机验收附件，目录按现有规则忽略，未纳入Git或正式部署。可复现操作、源码范围和检查结论保存在下面的开发记录及执行计划中。
 
-监控使用官方`@vercel/analytics`2.0.1、`@vercel/speed-insights`2.1.0的Astro组件，在index.astro各接入一次。Vercel项目WebAnalytics原已启用，SpeedInsights已有ID但hasData=false；没有SDK时不能声称已采集。基础SDK接入与SpeedInsights Plus开关不同：官方`/speed-insights/toggle`尝试返回402“Speed Insights Plus is available on pro and enterprise plans”，没有升级套餐或更改付费开关。后续以正式脚本、实际采集响应和项目数据判定结果。
+终端高亮需要区分文件语法和命令stdout：Shiki处理YAML、INI、Markdown、Shell和log；`ls`、帮助、身份、路径及错误由ansi-colors4.1.3生成ANSI，统一交给ansi-to-react6.2.6渲染。库解析ANSI，不手写转义解析器或分词正则。目录蓝色、可执行脚本绿色、文件黄色、帮助青色、错误红色，调色与Figma参考149:3202一致。`TerminalAnsi`是唯一渲染入口；补全候选在逻辑层保持纯文本，展示时复用ANSI颜色，rawInput历史保持无ANSI文本。console库默认message字体会覆盖父级字体，因此messageStyle显式指定IBM Plex Mono14px/24px，而非只依赖继承。
 
-本地38文件类型检查0错误/警告/提示、静态构建通过；浏览器核对ls四种实际计算色、帮助/错误/身份/路径、五类文件高亮，历史、补全、clear、PDF及减少动态效果，手机390无横向溢出。截图在verification/terminal-ansi-local-desktop.png和terminal-ansi-local-mobile.png。正式发布及独立检查待本轮收尾，见[执行计划](../docs/exec-plans/active/terminal-output-vercel-monitoring.md)。
+监控使用官方`@vercel/analytics`2.0.1、`@vercel/speed-insights`2.1.0的Astro组件，在index.astro各接入一次。部署后两项动态脚本、view及vitals上报均200；CLI查询6次页面访问，项目API两项hasData=true，SpeedInsights有dataReceivedAt1794381501110。没有打开仪表盘UI，独立LCP聚合暂未返回summary，不把采集成功等同于所有图表已填充。沿用免费档的访问统计与RES；基础SDK接入和Plus开关不同，官方toggle尝试返回402，没有升级套餐。
+
+本地38文件类型检查0错误/警告/提示、静态构建通过；浏览器核对ls四种实际计算色、帮助/错误/身份/路径、五类文件高亮，历史、补全、clear、PDF及减少动态效果，手机390无横向溢出。原生Terra gpt-6.1-terra代理01a1c973-6fd7-7083-9c20-819c56055007独立check/build、模块行为、转义、复用及截图检查通过；未独立操作浏览器或项目后台。检查后精确源码部署为dpl_HrzY54totHQZ8ian9G6ytxVnFpok（READY）；正式1440/390、颜色/字体复验通过。截图在verification/terminal-ansi-production-desktop.png、terminal-ansi-production-mobile.png；监控响应证据在verification/vercel-monitoring-production.json，完整记录见[执行计划](../docs/exec-plans/completed/terminal-output-vercel-monitoring.md)。
+
+监控验收经验：SDKv2由Vercel构建注入动态采集路径，读取实际script的dataset再验证，不能只请求旧固定URL。性能SDK源码过滤webdriver/headless；IAB未见性能事件后，真实Edge经正常导航产生vitals200，不修改检测标志或伪造指标。终端验收必须执行ls/help/错误，不能只看已有Shiki首页输出就声称所有结果有颜色。
+
+## 终端输入提示与补全（2026-11-11）
+
+占位跳动来自失焦20px和库默认聚焦7px的输入padding；已删除假光标与条件偏移，提示符和输入统一IBM Plex Mono16px/26px、gap8px、padding0。占位文字聚焦透明、失焦恢复；使用原生聚焦光标。库默认input的fontSize/fontFamily会覆盖font简写，因此显式设置字体长属性。Figma先更新共享提示符90:1549和状态参考149:3202，再实施代码。
+
+`terminalCompletion.ts`统一返回补齐文本和候选；唯一候选直接填入，多个候选扩展公共前缀并经现有TerminalAnsi展示，空Tab列出命令，无匹配提示No matches.。cd只补目录，whoami --a和ls -补参数；候选不执行、不写历史，Shift-Tab可离开。复用react-console-emulator5.0.2的原生输入/stdout/history，无新依赖。之前仅测唯一前缀，遗漏空输入和歧义反馈；验收须同时覆盖这些分支及补全后继续逐字输入并执行。
+
+隔离4328预览：39文件check零诊断、静态构建通过；桌面1440和手机390/320验证焦点、占位、候选与输入，输入相对起点17.6px三态不变，进入projects后123.2px也稳定。实际who+Tab后继续输入--about并执行、cat pro候选、cd路径、参数、无匹配、历史、Shift-Tab、clear、PDF打开及减少动态效果通过。未使用手机真机；浏览器无错误。
+
+原生Terra gpt-6.1-terra代理01a1c994-d74c-7282-9b2d-9f6eafd57144独立check/build、模块行为、暂存哈希与截图核对通过；未独立操作浏览器。精确源码快照部署dpl_5c2aJCA3RytLc85mNTVLmJUXH93m为READY，正式1440/390实测占位三态、唯一补全后继续输入执行、空Tab及多候选通过；ANSI颜色与两项监控脚本各一份，未重复测监控网络上报。截图verification/terminal-completion-production-desktop.png和terminal-completion-production-mobile.png；完整记录见[本轮执行计划](../docs/exec-plans/completed/terminal-input-completion.md)。尺寸设置后须读回innerWidth：一次390设置落在另一个标签页，确认实际1280后改用已验证标签页访问正式网址，重新完成390/1440验收，未用错误尺寸截图代替手机验证。
+
+## help 小猫彩蛋（2026-11-11）
+
+用户确认连续每3次无参数help附加ASCII小猫，help -h立即触发，其他命令重置计数；刷新也重置。帮助列表照常保留，附加绿色三行小猫和青色英文Still need help? Meow.。本轮仅修改terminalShell.ts、terminalCompletion.ts及本记录，无新增依赖；help -可用Tab补成help -h。计数归属createTerminalShell的页面会话闭包，各终端实例独立；非help命令在未知命令检查前重置，clear、pwd及错误输入都可打断连续help，空白输入和补全不执行命令。
+
+有限复用核查（2026-11-11）：预算为已安装5.0.2实现与既有库调查、[官方命令API](https://github.com/linuswillner/react-console-emulator/blob/master/docs/API.md)的一次正文读取、现有ANSI/多行输出调用链。命令参数和多行stdout已有接口；现有TerminalAnsi、ansi-colors和IBM Plex Mono承担显示，只补业务计数和固定ASCII文字，不引入生成器。Figma状态189:3199（会话2e703921-0684-457f-8ae3-b9edbe3e2b11）先于代码完成并目视检查，桌面/手机两实例继续关联窗口主组件90:1552；猫色复用既有connect.sh的ANSI绿色，未改首页静态资料状态。
+
+本地隔离4329预览：39文件类型检查零诊断、静态构建成功；实际键入6次help得到false/false/true/false/false/true的彩蛋序列。pwd和unknown-command打断后重新从第3次触发；help -h立即显示并开始新的普通help计数周期，Tab参数补全、上下键历史、刷新重置通过。320px窄屏scrollWidth314px，猫使用14px/24px IBM Plex Mono，计算色rgb(166,227,161)，字符空格保留。桌面1440与手机390截图在verification/terminal-help-cat-local-desktop.png、terminal-help-cat-local-mobile.png；没有手机真机覆盖。
+
+原生Terra gpt-6.1-terra代理01a1c9a6-20a3-7a00-b6b5-186385ca09a8独立check/build、真实模块计数/重置/参数边界/不同shell隔离与截图核对通过，未独立操作浏览器或核验Figma实例关系。初检发现文档把现行部署提前指向待发布记录，删除不实引用后同代理复核通过；源码未变。39文件零错误/警告，静态构建完成；源码审核树16d7772fbed49d878c03fbdcb4dfe757550a2d6e，使用其隔离快照部署dpl_6bpjKPjTWUNRzY9eG7oXomz3yT4G为READY，正式网址https://ops-portfolio-five.vercel.app/。
+
+| 操作 | 预期结果 | 实际验证 |
+|---|---|---|
+| 连续6次help | 第3、6次附猫，其余仅原帮助 | 本地与正式1440通过，false/false/true/false/false/true |
+| help -h；help -后Tab再Enter | 立即附猫；补成help -h并正常执行 | 本地、正式通过，390手机即时触发通过 |
+| help两次后pwd/未知命令/clear，再help | 计数重置，不立即附猫 | 本地三类均通过，正式pwd/clear通过 |
+| 刷新；上下键历史 | 普通help重新计数，历史仍可恢复命令 | 本地通过 |
+| help -h extra、help --other；不同shell、空白与纯补全 | 误参数不触发；状态隔离，空白/补全不改变计数 | Terra真实模块验证通过 |
+| 桌面1440、手机390/320 | ASCII等宽对齐，可输入，无横向溢出 | 本地三尺寸通过；正式1440/390的scrollWidth1434/385，浏览器无错误 |
+
+正式截图verification/terminal-help-cat-production-desktop.png、terminal-help-cat-production-mobile.png。两项官方Vercel监控脚本仍各一份；本轮未重复测试监控上报、PDF缩放或手机真机。截图是被忽略的本机验收附件，不随Git或Vercel发布；发布后只补本文记录，没有改运行源码。
 
 ## 终端彩蛋与 PDF 缩放（2026-11-10）
 
-最新交付状态（2026-11-11）：以下首版与后续版本记录保留为历史；当前正式部署为`dpl_Ea8sc6duCJtXYkVyUJ5Jus5zswdJ`（READY），网址 https://ops-portfolio-five.vercel.app/ 。紧凑PDF工具栏已发布，桌面按钮及Ctrl+滚轮、Fit width、实际下载与手机390/320布局通过；下载SHA256与源PDF一致。完整状态见[终端与缩放执行计划](../docs/exec-plans/completed/terminal-easter-eggs-pdf-zoom.md)。
+PDF工具栏历史验收（2026-11-11）：该轮验证的正式部署为`dpl_Ea8sc6duCJtXYkVyUJ5Jus5zswdJ`（READY）。紧凑PDF工具栏、桌面按钮及Ctrl+滚轮、Fit width、实际下载与手机390/320布局通过；下载SHA256与源PDF一致。历史完整记录见[终端与缩放执行计划](../docs/exec-plans/completed/terminal-easter-eggs-pdf-zoom.md)。
 
 原生Terra检查`gpt-6.1-terra`，代理`01a1c7ca-59e0-7c90-b7f5-7bb09946a84b`：19文件暂存范围独立check/build、实际模块命令/补全/错误/PDF回调、依赖与复用、截图及下载哈希核对通过。初检把手势中心误读为固定屏幕中心，核对用户实际确认范围后撤销该阻塞，未因此修改代码；Terra未独立操作浏览器。正式部署来自其检查的精确源码快照。截图`verification/pdf-compact-production-desktop.png`和`pdf-compact-production-mobile.png`。
 
@@ -71,7 +106,7 @@ PDF手势复用MIT的[@use-gesture/react10.3.1](https://github.com/pmndrs/use-ge
 
 2026-11-11：首版命令与缩放已发布到正式网址，部署`dpl_DdrFLAnSqk4YHsJ7MQTgekLGdSbE`为READY。线上桌面1440/手机390实测`ls`、`who`→Tab→`whoami`、`cat res`→Tab→`cat resume.pdf`、上下键历史、`open ~/resume.pdf`和PDF150%/适宽通过，无浏览器错误。截图`verification/terminal-production.png`及对应桌面/手机整页。此前只验证本地、未部署，导致用户在正式站点仍看到不可输入的静态终端；今后交付必须核对实际正式网址的输入和补全，不用本地验收代替线上状态。用户正在继续要求页面同名命令与Shiki高亮，后续版本验收见活动计划。
 
-同日后续版本已发布，当前正式部署为`dpl_CvRe6dgSd74nTaZTsbrFCmFR4eND`（READY）。首页与`cat profile.yaml`共用真实YAML文本；`whoami --about`、`ls ./projects/`、`cat ./skills.conf`、`cat ./education.log`、`ls ./interests/`和`./connect.sh`返回对应资料。英文说明作为译文保存在content.json相关条目旁，工具、项目、联系方式与时间仍由同一份数据生成；页面中文不变。高亮复用已安装的MIT库Shiki4.6.0，按需加载core、JavaScript引擎、四种语法和catppuccin-mocha主题；TerminalCode渲染库返回的tokens，未手写分词或高亮正则。原字段卡片及其CSS已删除，保留逐字命令、按行出现和光标动画。
+同日Shiki版本的历史部署为`dpl_CvRe6dgSd74nTaZTsbrFCmFR4eND`（READY）。首页与`cat profile.yaml`共用真实YAML文本；`whoami --about`、`ls ./projects/`、`cat ./skills.conf`、`cat ./education.log`、`ls ./interests/`和`./connect.sh`返回对应资料。英文说明作为译文保存在content.json相关条目旁，工具、项目、联系方式与时间仍由同一份数据生成；页面中文不变。高亮复用MIT库Shiki4.6.0，当时按需加载core、JavaScript引擎、四种语法和catppuccin-mocha主题；TerminalCode渲染库返回的tokens，未手写分词或高亮正则。原字段卡片及其CSS已删除，保留逐字命令、按行出现和光标动画。
 
 此版36文件类型检查0错误/警告/提示，生产构建通过。正式网址实际执行上述六种区块命令、参数补全、异常输入和从终端打开PDF并放大至125%；桌面1440/手机390无横向溢出，无浏览器错误。本地另测文件补全、历史、清屏、兴趣目录读取、脚本源码、Shift-Tab离开、Escape焦点返回和减少动态效果；减少动画时首行opacity1/animation none。Figma共享源及桌面/手机整页、首屏已目视检查。最新线上截图：verification/terminal-yaml-production-desktop.png、terminal-yaml-production-mobile.png。
 

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 import ConsoleModule from 'react-console-emulator';
 import { createTerminalShell } from '../lib/terminalShell';
-import { terminalColors } from '../lib/terminalColors';
+import { colorTerminalEntry, terminalColors } from '../lib/terminalColors';
 import { TerminalCode } from './TerminalCode';
 import { TerminalAnsi } from './TerminalAnsi';
 
@@ -23,6 +23,18 @@ function submitCommand(terminal: InstanceType<typeof Console> | null, shell: Ret
   terminal.scrollToBottom();
 }
 
+function completeInput(terminal: InstanceType<typeof Console> | null, shell: ReturnType<typeof createTerminalShell>, input: HTMLInputElement) {
+  const result = shell.complete(input.value);
+  input.value = result.value;
+  input.setSelectionRange(result.value.length, result.value.length);
+  if (result.candidates.length === 1) { return; }
+  const message = result.candidates.length
+    ? result.candidates.map(colorTerminalEntry).join('  ')
+    : terminalColors.cyan('No matches.');
+  terminal?.pushToStdout(<TerminalAnsi text={message} />);
+  terminal?.scrollToBottom();
+}
+
 function handleConsoleKey(event: KeyboardEvent<HTMLDivElement>, terminal: InstanceType<typeof Console> | null, shell: ReturnType<typeof createTerminalShell>, directory: string) {
   if (!(event.target instanceof HTMLInputElement)) { return; }
   if (event.key === 'Enter') {
@@ -31,9 +43,9 @@ function handleConsoleKey(event: KeyboardEvent<HTMLDivElement>, terminal: Instan
     submitCommand(terminal, shell, directory, event.target);
     return;
   }
-  if (event.key !== 'Tab' || event.shiftKey || !event.target.value) { return; }
+  if (event.key !== 'Tab' || event.shiftKey) { return; }
   event.preventDefault();
-  event.target.value = shell.complete(event.target.value);
+  completeInput(terminal, shell, event.target);
 }
 
 function useConsoleInput(onResume: () => void) {
@@ -67,8 +79,8 @@ export function TerminalConsole({ intro, onResume }: TerminalConsoleProps) {
         className="terminal-emulator" inputClassName="terminal-input" inputAreaClassName="terminal-input-row"
         messageClassName="terminal-response" style={{ backgroundColor: 'transparent', minHeight: 0, padding: 24, borderRadius: 0 }}
         contentStyle={{ padding: 0, color: 'var(--text)', font: '14px/24px var(--font-mono)' }}
-        inputStyle={{ color: 'var(--accent)', font: '16px/26px var(--font-mono)', minWidth: 0, height: 26 }}
-        inputAreaStyle={{ marginTop: 24 }} promptLabelStyle={{ color: 'var(--accent)', font: '14px/26px var(--font-mono)' }}
+        inputStyle={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)', fontSize: 16, lineHeight: '26px', minWidth: 0, height: 26, padding: 0 }}
+        inputAreaStyle={{ marginTop: 24, gap: 8, alignItems: 'center' }} promptLabelStyle={{ color: 'var(--accent)', font: '16px/26px var(--font-mono)', paddingTop: 0 }}
         messageStyle={{ color: 'var(--text)', font: '14px/24px var(--font-mono)', lineHeight: '24px', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }} />
     </div>
   );
