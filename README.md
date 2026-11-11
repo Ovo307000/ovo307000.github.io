@@ -1,45 +1,99 @@
-# future
+# 个人网站主页
 
-This template should help get you started developing with Vue 3 in Vite.
+[打开 Figma 设计](https://www.figma.com/design/98rP58yj706LdDUn9qfcLG?node-id=108-2140) · [手机设计](https://www.figma.com/design/98rP58yj706LdDUn9qfcLG?node-id=108-2690)
 
-## Recommended IDE Setup
+中文求职主页，展示应用开发、Web 开发与 Linux 运维实践。采用用户确认的“终端手册式”：命令行标题、整齐对齐、细分隔线、少量荧光绿和克制扫描线；正文保持开放排版，保留认可的四张照片渐变项目封面。手机纵向重排同一份首屏、专业方向、完整介绍、项目实践和技术探索，保留双列技能与纵向教育时间线。两端项目和 PDF 均放入首页同源终端外壳。当前已实现 Astro + React 网站并发布至 Vercel；Figma 保留可编辑设计与原型连线。
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 内容数据
 
-## Type Support for `.vue` Imports in TS
+`content.json` 是结构化内容来源。简历事实以当前 Figma 简历为准，新增项目经用户授权用 gh 核对仓库 README、项目结构和依赖清单。用户后续要求补全邮箱和 GitHub：邮箱 `solowzl@outlook.com` 来自新版 Figma 简历的 `20:5`；主页 `https://github.com/Ovo307000` 与简历 `4:5` 及 `gh api user` 一致。桌面和手机均采用图标＋邮箱／账号文字按钮，设置 mailto／GitHub URL，正式页和原型同步。`identity` 的姓名、手机号、简历 URL 及两个 Java 项目的仓库 URL 仍为 `null`；PawLink、KCD2 保留公开仓库链接。私有项目细节未写入主页。到岗状态、地点字段及对应图层和变量已移除，网站 PDF 副本中的城市文字也已实际删除。本次补全联系区不修改原简历或重新导出 PDF，PDF 预览仍保留脱敏版本。
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+Figma 的 `Content · zh-CN` 集合包含 224 个 STRING 变量。变量路径对应 JSON 字段，例如 `hero/summary`、`projects/0/name`、`skills/2/description`。两端首屏、章节标题、专业方向、简介及两条特征说明共用变量；不再保留手机专用的同义标题和删减版关于我文案。项目、技能、兴趣通过属性或文字绑定共享内容；手机项目只保留版面所需的摘要，完整正文在终端内沿用原项目卡片。教育的 `logoPath` 指向原有校徽资源。姓名、手机号及下载地址仍为空，邮箱与 GitHub 沿用已核对值。
 
-## Customize configuration
+JSON 已通过 `src/lib/content.ts` 接入 Astro + React 网站，桌面、手机与项目弹窗共用同一数据。修改本地 JSON 不会自动同步远程 Figma；需要同步相应 Content 变量。新增、移除或重排项目与技能还需调整对应实例，数组下标变化时同步检查变量路径。不要把缺失字段替换成虚构个人资料或示例联系方式。
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## 前端实现（2026-11-10）
 
-## Project Setup
+已按组件清单逐个实现全部主页区块、四项目详情和简历预览；共用按钮、章节标题、终端外壳、项目正文及目录条目，跨屏通过响应式布局重排。运行 `npm run dev` 预览，`npm run check` 和 `npm run build` 验证。组件入口、素材来源和维护经验见 [开发交接](DEVELOPMENT.md)，逐项验收与恢复方法见 [实施计划](../docs/exec-plans/completed/website-implementation.md)。[Vercel 正式页面](https://ops-portfolio-five.vercel.app/) 已发布；终端组件使用英文等宽字体，提供红灯关闭、禁用黄灯、绿灯最大化/还原及开关动画，手机菜单与终端输出有过渡效果。
 
-```sh
-npm install
-```
+简历下载已接入现有 `resume.pdf`；预览沿用同一文件的渲染页，可放大、适宽和滚动。网站标签与 Figma 共用 PDF 按钮 `106:2079`、变量 `resumePreview/downloadLabel` 均为“Download PDF”，Figma 正常与最大化 PDF 状态已同步。Figma 原型中的下载动作仍只是设计连线，实际下载在浏览器执行。
 
-### Compile and Hot-Reload for Development
+## 设计结构
 
-```sh
-npm run dev
-```
+- 页面：`01 · 主页 / Desktop + Mobile`。
+- 桌面主组件：`108:2140`，1440×5363；手机主组件：`108:2690`，390×6184。原画框已提升为主组件，原型分别引用 `108:2141`、`108:2691`，不再各维护一份页面布局。
+- 项目主组件：`3:223`；技能主组件：`3:299`；组件区：`3:49`。
+- 终端主组件仍为 `90:1552`。两端首页及原型、八个项目弹窗和三个 PDF 状态共 15 个实例，均继承黑色背景、12px 圆角、44px 标题栏和同一泛光，外壳外观覆盖为 0。标题与内容使用 `Title#90:0` 和 `Content` 插槽；44px 关闭热区和 CLOSE 行为在主组件维护，通过 `Interactive close#105:0` 控制是否启用。
+- 首页保留 `Terminal / surrounding background`；11 个正式弹窗的遮罩共用 `Overlay / backdrop` 画笔样式。泛光只在终端主组件维护。旧的独立预览板已移除，节点入口见 `figma-terminal-state.json`。
+- 原型入口仍为桌面 `26:790`（1440×1000）、手机 `26:1294`（390×844）。入口分别引用对应页面主组件；项目及简历设置 OVERLAY，关闭设置 CLOSE，手机 PDF 适宽与放大用 SWAP。连线结构已写入，实际点击未通过播放验收。
+- PDF 预览：桌面 `15:558`、手机 `15:690`、手机放大 `21:1067`；四个手机项目详情为 `21:1093`、`21:1178`、`21:1261`、`21:1350`。
+- 四个封面保留原组件 `29:1211`、`32:1194`、`32:1229`、`32:1264`，照片、类别条、渐变和原生标题不变。手机摘要沿用 342×170，弹窗内部为 334×170；照片按画幅裁切。手机四个摘要共用 `102:1621`，完整正文仍用 `3:223`。
+- 教育区保留根节点桌面 `21:928`、手机 `21:1622`；桌面时间线 `39:1207` 横向连接两段经历，手机 `39:1233` 纵向连接。校徽组件 `39:1198`、`39:1200` 复用当前简历中的两张徽章，桌面 52px、手机 48px；八个正式页和原型实例关联同一组件。
+- 关于我位于项目实践之前。两端的项目实践／技术探索共用唯一特征行组件 `43:1202`，标题、说明和图标通过属性区分；旧平行主组件已删除。手机兴趣三条共用 `111:2446`。两端保持开放正文、图标和细线分隔。
+- 桌面首屏终端采用圆角 macOS 窗口与左侧红黄绿控制钮，标题居中显示 `profile.yaml`；旧字符控制符、右上角 CRT 装饰文案及职业标签前状态点已删除。项目按实际阅读顺序编号：PawLink 01、苍穹外卖 02、尚庭公寓 03、KCD II 04；JSON 数组索引保持原字段路径，`number` 是展示序号，不能用数组下标生成可见编号。
+- `Theme · Terminal` 包含颜色、间距与 `radius/control` 变量。当前中文使用 Noto Sans SC，终端标签和品牌使用 IBM Plex Mono。
+- 操作按钮继续复用 SDS Button：4px 圆角、48px 高、16px 图标和 8px 图文间距。手机首屏两按钮、四个项目入口及联系区三按钮均为内容区等宽；普通页面为 342px，弹窗按内边距适配。mail `65:1242`、GitHub `65:1245`、file-text `66:1269` 和项目图标 `3:71` 保留；原有固定绿色图标描边改绑统一强调色。
+- 导航按阅读顺序为关于我 01、项目实践 02、技术能力 03、个人兴趣 04，两个桌面入口的滚动目标同步重排。技能按展示顺序为应用开发 01、Web 开发 02、系统与脚本 03、容器与部署 04、数据与云服务 05、模组实践 06；兴趣为 01—03。重排只修改展示编号，不改变底层数据路径。
+- 初次设计记录位于 `../docs/exec-plans/completed/personal-homepage.md`，当前修改与待验证项位于 `../docs/exec-plans/active/personal-homepage-crt.md`。
 
-### Type-Check, Compile and Minify for Production
+## 简历 PDF
 
-```sh
-npm run build
-```
+`resume.pdf` 来自当前 [Figma 简历 2:2](https://www.figma.com/design/ElHArw0x581XjjlxG7JAlO?node-id=2-2) 的官方 PDF 导出，保留原始绿色终端版式。一页 A4，595.28×841.89pt。网站副本对姓名、电话、邮箱、GitHub、到岗状态和地点做实际文本删除及必要占位处理，清除链接与原元数据；原始简历文件及原 Figma 简历不改动。
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+`resume-page.png` 是该 PDF 的渲染页。共用阅读器为 `106:2081`，原页组件 `117:2291` 保留矩形资源 `106:2080`，锁定纸张比例并适宽；纸张放在独立的原生滚动插槽 `117:2292`。三个状态均保持工具栏在视口内，只有纸张随适宽／放大改变尺寸，避免放大后控件移出屏幕。外壳直接用首页终端，不另排一份简历。网站现已接入原 PDF 下载，按钮显示“Download PDF”；Figma 滚动和放大只是原型状态，不等同于浏览器原生 PDF 引擎。
 
-```sh
-npm run test:unit
-```
+## 验证
 
-### Lint with [ESLint](https://eslint.org/)
+2026-11-10 已查看两版整页及可读尺寸的首屏、四项目、技能、教育、兴趣、联系和页底。四张封面替换后检查桌面整页、项目区与三个手机详情截图；另外三个项目在桌面、原型和手机详情共九个实例均指向新封面，主组件默认封面也已更新。未发现非预期越界或残留占位。除照片和 PDF 文档页外，文字、组件及图形为原生可编辑图层，没有整页截图代替主页。
 
-```sh
-npm run lint
-```
+已实测共享简介、长项目名、长兴趣标题和说明更新及自动增行，分别跨独立调用读取，测试后恢复正式数据。新教育时间线增加了长学校名称测试：手机第一段增高 24px，连接线随之延长，第二段及后续内容自动下移；桌面学校名增行 36px，日期轴保持对齐。已查看测试截图，恢复后独立读取四个正式页与原型的学校名称、尺寸均正常。PDF 重新解析结果为一页、零链接，无手机号、邮箱、城市或到岗文案。原型目的节点均存在，固定视口和 PDF 滚动方向已核对。实际 Present 播放遇到登录／Prototype not found 提示；因此打开、返回、滚动和缩放的真实点击效果尚未通过 UI 实测，不将结构检查称为点击测试。
+
+当前整页为桌面 1440×5363、手机 390×6184，最终截图为 `desktop.png`、`mobile.png`。本轮刷新了两端首屏、关于我、手机四项目、手机原型、四个手机项目弹窗和三种 PDF 状态。`terminal-modal-preview.png` 现为实际桌面项目弹窗，不再对应已删除的预览板。PDF 适宽的纸张尺寸为桌面 552×780.682、手机 334×472.369，放大为 650×919.281；独立读取确认同一比例，手机最终截图已显示完整纸张宽度。
+
+本轮独立读取：15 个终端实例均关联 `90:1552`，继承同一黑色背景、12px 圆角和泛光效果样式，未发现外壳外观覆盖。两端页面、原型及弹窗文本未发现超出直接父级的边界问题。PDF 比例修改从唯一源传播至三个正式状态；未重新进行全体终端的临时边框传播实验。两端项目 01—04、技能 01—06 的既有顺序保留。照片、校徽和 PDF 原页以外仍为原生文字、矢量及组件。
+
+2026-11-10 实际播放：从内嵌 Figma 点击 Present 打开了正式桌面入口，浏览器显示“未找到原型／登录”。未把连线、滚动配置和截图当成点击通过。用户随后明确“先不纠结这些了，样式做好就好”，因此本轮按样式交付收口，暂停进一步播放、滚动保持与交互排查；下载按用户选择保留待接入。另一个工作单元的 Astro 实现未随本轮设计同步，未发布网页或 PDF。
+
+## 维护经验
+
+- 2026-11-10 已验证，限本文件 PDF：实例内直接 `resize` 原页矩形未留下宽高覆盖，手机仍按 430px 被裁切；在原页唯一源使用 `lockAspectRatio()` 与横向 FILL 后，三个正式状态分别自动得到 552、334、650px 宽及正确比例。先读稳定后的实例尺寸，再导出截图，避免把同一调用内尚未完成的重排当成最终画面。
+- 2026-11-10 已验证，限官方工具的插槽内容：移动插槽内 Frame 后继续使用原派生 ID 会报节点不存在；本轮两次失败均回滚。最终从现有内容提取一个主组件，并立即以实例替换、删除旧插槽 Frame。后续通过稳定的弹窗根节点重新读取插槽内真实 ID，不沿用创建当次的短 ID。
+- 2026-11-10 用户明确收口要求：先完成样式，不再继续纠结原型播放与交互排查；该取舍不表示真实交互已验证通过。
+
+以下均为 2026-11-10 本文件设计中的实测结果，证据和复现过程见完成计划。
+
+- 文字调用 `resize` 后需要最后设置 `textAutoResize = 'HEIGHT'` 和垂直 `HUG`，否则可能被锁为 1px 高度并发生可见重叠；检查实际文字高度与截图。
+- SVG 图标主组件的子节点采用双向 `SCALE` 约束，实例从 24 缩到 16/20/22 时才能同步缩放。
+- 检查变量引起的多层重排时，将修改保留到下一次独立读取，再恢复并重新读取。一次调用内的父级高度可能尚未反映所有后代变化。
+- 用户本次明确约定：使用已有简历，暂不输入姓名、手机号等敏感信息，内容用数据驱动；该约定仅覆盖此网站设计。
+- 用户纠正：移动端不能压缩桌面；明确章节标题、教育独立；PDF 展示原页；不使用爪印加线框卡片的占位式封面，四张封面均采用与项目主题相关的照片和可编辑标题。已在本设计落实。
+- 用户本轮要求更详细的“关于我／个人兴趣”、移除地址、学校改时间线并加校徽。文案只细化已有项目方向和已确认兴趣，不新增业绩或任职；主页、原型和网站 PDF 均移除城市。
+- 教育时间线用自动布局管理学校和徽章，手机每段连接线填满当前内容高度，首段底线与次段顶线连续。长学校名增行后仍保持连接，不用固定坐标锁住第二段位置。
+- 项目重排后需要同步序号变量、封面、正文标题、手机列表和详情，不能只改卡片显示位置。本次已核对两版和原型均从 01 递增至 04。
+- 约定类／已验证（2026-11-10，限本网站）：用户指出“为什么……只改我说的地方”，编号检查必须同时覆盖项目、技能、兴趣、导航、正式页和原型；同级控件检查包含整组按钮。此次全范围读取通过，不把单个字段正确当作整页一致。
+- 约定类／已验证（2026-11-10，限本网站）：用户要求先问风格，选择“终端手册式”，随后明确“之前这样项目卡片很好看，不要换”。该风格落实为开放正文与细线分隔，同时保留四张照片、类别条、渐变和标题封面；已认可部分不随全页风格调整擅自替换。
+- 工具实测（2026-11-10）：修改绑定圆角后再直接赋 `cornerRadius` 会清掉绑定。最后用四个角的 `setBoundVariable` 绑定同一半径变量，并独立读取全部按钮确认。颜色绑定的备用 RGB 应与变量真实值一致；以实际截图核对，不能只看别名存在。导入 SVG 的隐藏背景填色即使保留 `visible:false`，绑定后仍曾渲染为方块；删除该隐藏背景填色、保留矢量描边后截图恢复正常。
+- 约定类／已验证（2026-11-10，限本网站）：用户最终要求“改为icon加文字，也包括页头的两个按钮”。联系入口保留信封／GitHub 图标与真实邮箱／账号，项目与简历操作使用图标加名称；不能把“用 icon”自行解释成永久删除所有可见文字。
+- 约定类／已验证（2026-11-10，限手机首页与原型）：用户指出“移动端的按钮大小不一致／项目卡片加入到移动端／关于我和项目实践离得太近了”，并选择“按此实施”。操作按钮须统一内容区等宽，不能只统一高度与圆角；项目复用认可封面，保留手机摘要和详情；章节留白与条目间距分开设置。本轮实际核对 16 个等宽按钮、八个封面实例和两处 96px 留白，截图见上。
+- 约定类／已验证（2026-11-10，限本网站）：用户指出“造一百个看起来一样但实际上各自实现的组件就叫做一致性吗”。复用验收必须核对同一主组件关联、实例无外观覆盖，并实际修改一次源组件验证所有实例联动，最后恢复。仅复制标题栏、填色、圆角后组装普通画框不算复用。此次五个终端实例同源，1px→2px→1px 边框联动读取通过。还需检查父级背景、模糊和裁切；同一组件不能代替最终视觉检查。泛光截图的外侧18900个对应像素比较，最大RGB通道差为2，不能据此宣称整图像素完全相同。
+- 全页外框若将描边计入自动布局，会让 390/1440 的内容区域减少 2px。根层关闭 `strokesIncludedInLayout` 后重新核对所有行宽，消除了相邻固定列的两像素越界。
+- SVG 项目插画应锁定原始宽高比，再让宽度随容器填充，避免在手机详情里横向挤压。
+
+## 资源与许可
+
+核查日期：2026-11-10。
+
+- [Lucide Mail](https://github.com/lucide-icons/lucide/blob/main/icons/mail.svg)、[File Text](https://github.com/lucide-icons/lucide/blob/main/icons/file-text.svg)：官方库查询无匹配后直接复用官方 SVG，保存于 `assets/mail.svg`、`assets/file-text.svg`，沿用本目录已有 Lucide 许可。GitHub 标志复用 [GitHub Octicons mark-github-24](https://github.com/primer/octicons/blob/main/icons/mark-github-24.svg)，保存为 `assets/github.svg`，官方 MIT 原文保存在 `assets/OCTICONS-LICENSE.txt`。均为可编辑矢量，没有引入网站图标框架。
+
+- [Figma 变量 API](https://developers.figma.com/docs/plugins/api/figma-variables/)：采用原生变量与别名，没有新增文案同步框架。
+- Simple Design System：Figma 官方库查询返回 Button 组件集 `cc8b558dc7d9684011b6b99ce8e6509399bc836b`，使用原生关联实例。
+- [Lucide Static](https://lucide.dev/guide/packages/lucide-static) / [源码](https://github.com/lucide-icons/lucide)：使用 arrow-up-right、arrow-right、terminal、container、database、code、map-pin、menu。SVG 主组件描述中保留完整许可证，本目录 `LUCIDE-LICENSE.txt` 同步保存 ISC 与相关 Feather MIT 声明。
+- [PawLink README](https://github.com/Ovo307000/pawlink/blob/master/README.md) 与 [package.json](https://github.com/Ovo307000/pawlink/blob/master/package.json)：核对动物领养功能、TypeScript/Next.js/Prisma 等工程实践；未运行项目或核实部署状态。
+- [PawLink 原始封面图片](https://github.com/Ovo307000/pawlink/blob/master/public/hero-bg.png) 与 [HeroSection](https://github.com/Ovo307000/pawlink/blob/master/src/components/home/HeroSection.tsx)：复用实际首页资源与“用领养替代购买”原文，保存为 `assets/pawlink-hero.png`；仓库 AGPL-3.0 许可原文保存为 `assets/PAWLINK-LICENSE.txt`。这是按项目内容重组的封面，不是运行中网页截图。
+- [KCD2 README](https://github.com/Ovo307000/kcd2-mods/blob/main/README.md)：作为 Lua/C++/ASI 模组开发工作区介绍，未宣称已发布模组或运行验证成功。
+- 苍穹外卖：Anna Pelzer 的 [bowl of vegetable salads](https://unsplash.com/photos/bowl-of-vegetable-salads-IGfIGP5ONV0)，保存为 `assets/sky-food.jpg`，适用 [Unsplash License](https://unsplash.com/license)。这是餐饮主题照片，非项目实际页面或菜品数据。
+- 尚庭公寓：[仓库房屋图片](https://github.com/Ovo307000/lease/blob/master/rentHouseH5/src/assets/my_room_bg.png)，保存为 `assets/lease-house.png`；仓库 MIT 许可原文保存于 `assets/LEASE-LICENSE.txt`。不将示意照片称为真实在租房源。
+- KCD II：[官方 Steam 商店](https://store.steampowered.com/app/1771300/Kingdom_Come_Deliverance_II/) 的媒体图 `ss_709f3329562cd2cfe6db70bac908b3e72eaef83b.1920x1080.jpg`，保留上方 1920×720 区域以显示城堡，保存为 `assets/kcd2-scene.jpg`。游戏画面版权属于 Warhorse Studios / Deep Silver；用于标识目标游戏，非本工作区模组的运行成果。
+- 校徽：从上述当前 Figma 简历的原生 PDF 图片对象中提取，保存为 `assets/school-gongmao.png`、`assets/school-aufe.png`，与原简历徽章逐图核对后复用；徽章是独立资源，日期、学校、专业和时间线仍为可编辑图层。
+
+本任务新增网站资料，未修改原有简历、PDF 或原简历 Figma 文件。

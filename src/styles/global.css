@@ -1,62 +1,97 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@fontsource-variable/noto-sans-sc';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import './terminal.css';
+@import './sections.css';
+@import './projects.css';
+
 :root {
-  --primary-color: #3a4256;
-  --secondary-color: #4a90e2;
-  --background-color: #f0f4f8;
-  --text-color: #333333;
-  --header-footer-bg: rgba(240, 244, 248, 0.85);
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(74, 144, 226, 0.1);
+  --background: #050a06;
+  --surface: #0c160e;
+  --elevated: #15241a;
+  --text: #dfe9d5;
+  --secondary: #b4c2ab;
+  --muted: #93a585;
+  --accent: #bef482;
+  --border: #35503b;
+  --font-body: 'Noto Sans SC Variable', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --page-gutter: max(24px, calc((100% - 1200px) / 2));
+  --section-space: 88px;
+  color-scheme: dark;
+  font-family: var(--font-body);
+  background: var(--background);
+  color: var(--text);
+  font-synthesis: none;
 }
 
-.dark {
-  --primary-color: #64ffda;
-  --secondary-color: #ccd6f6;
-  --background-color: #0a192f;
-  --text-color: #8892b0;
-  --header-footer-bg: rgba(10, 25, 47, 0.85);
-  --glass-bg: rgba(16, 32, 58, 0.8);
-  --glass-border: rgba(100, 255, 218, 0.1);
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+html, .terminal-content, .terminal-emulator, .pdf-scroll { scrollbar-width: thin; scrollbar-color: #536c49 #080e09; }
+@supports selector(::-webkit-scrollbar) {
+  html, .terminal-content, .terminal-emulator, .pdf-scroll { scrollbar-width: auto; scrollbar-color: auto; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track, ::-webkit-scrollbar-corner { background: #080e09; }
+  ::-webkit-scrollbar-thumb { background: #536c49; border-radius: 6px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+  ::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+}
+body { margin: 0; font-size: 14px; line-height: 24px; }
+body:has(dialog[open]) { overflow: hidden; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; font: inherit; }
+a { color: inherit; text-decoration: none; }
+button, a { touch-action: manipulation; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+button:disabled { cursor: default; }
+h1, h2, h3, p, ul, figure { margin: 0; }
+ul { padding: 0; list-style: none; }
+img { display: block; max-width: 100%; }
+h2 { font-size: 34px; line-height: 49px; font-weight: 700; }
+h3 { font-size: 24px; line-height: 36px; font-weight: 500; }
+::selection { background: var(--accent); color: var(--background); }
+.portfolio { position: relative; isolation: isolate; box-shadow: inset 0 0 0 1px var(--border); }
+.page-texture { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+.icon { flex-shrink: 0; object-fit: contain; }
+.command, .mono { font-family: var(--font-mono); }
+.command { color: var(--accent); font-size: 12px; line-height: 20px; }
+.muted { color: var(--muted); }
+:where(.section) { padding: var(--section-space) var(--page-gutter); display: flex; flex-direction: column; gap: 40px; }
+.section-heading { display: flex; flex-direction: column; gap: 12px; }
+.section-description { color: var(--secondary); font-size: 16px; line-height: 28px; }
+.portfolio-button {
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  min-height: 48px; padding: 12px 20px; gap: 8px; border: 1px solid transparent;
+  border-radius: 4px; font-size: 14px; font-weight: 500; line-height: 22px;
+  transition: background-color 150ms, border-color 150ms; text-align: center;
+}
+.portfolio-button--primary { background: var(--accent); color: #16230e; }
+.portfolio-button--primary:hover { background: #d1ffa3; }
+.portfolio-button--outline { background: transparent; border-color: var(--border); color: var(--accent); }
+.portfolio-button--outline:hover { background: var(--elevated); border-color: var(--accent); }
+.portfolio-button--subtle { color: var(--secondary); background: transparent; }
+.portfolio-button--subtle:hover { color: var(--accent); background: var(--surface); }
+.portfolio-button--small { min-height: 36px; padding: 6px 8px; gap: 6px; font-size: 12px; font-weight: 400; line-height: 19px; }
+.portfolio-button:disabled { opacity: .5; }
+.portfolio-button--primary .icon { filter: brightness(0) saturate(100%); }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag { padding: 4px 8px; background: var(--surface); color: var(--secondary); font-size: 12px; line-height: 20px; }
+.skip-link { position: fixed; z-index: 20; left: 24px; top: -80px; padding: 12px 20px; background: var(--accent); color: var(--background); }
+.skip-link:focus { top: 12px; }
+
+@media (max-width: 767px) {
+  :root { --section-space: 32px; --page-gutter: 24px; }
+  .portfolio { border: 0; }
+  .page-texture { display: none; }
+  h2 { font-size: 26px; line-height: 39px; }
+  h3 { font-size: 18px; line-height: 28px; }
+  :where(.section) { gap: 24px; }
+  .section-heading { gap: 24px; }
+  .section-description { font-size: 14px; line-height: 24px; color: var(--muted); }
 }
 
-body {
-  font-family:
-    'Calibre',
-    'Inter',
-    'San Francisco',
-    'SF Pro Text',
-    -apple-system,
-    system-ui,
-    sans-serif;
-  line-height: 1.6;
-  color: var(--text-color);
-  margin: 0;
-  padding: 0;
-  background-color: var(--background-color);
-  transition:
-    background-color 0.3s,
-    color 0.3s;
-}
-
-.glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(10px);
-  border-radius: 4px;
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.1);
-}
-
-h1,
-h2,
-h3 {
-  color: var(--primary-color);
-}
-
-a {
-  color: var(--secondary-color);
-  text-decoration: none;
-  transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
-}
-
-a:hover {
-  color: var(--primary-color);
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
 }

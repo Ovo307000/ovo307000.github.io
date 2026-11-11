@@ -1,0 +1,23 @@
+---
+import '../styles/global.css';
+import { Portfolio } from '../components/Portfolio';
+import { content } from '../lib/content';
+import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={content.hero.summary} />
+    <meta name="theme-color" content="#050a06" />
+    <title>{content.site.brand} · 开发、部署与运维</title>
+  </head>
+  <body>
+    <Portfolio client:load />
+    <Analytics />
+    <SpeedInsights />
+  </body>
+</html>

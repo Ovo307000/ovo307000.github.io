@@ -1,0 +1,9 @@
+verification/
+dist/
+.astro/
+node_modules/
+/README.md
+/DEVELOPMENT.md
+/*.png
+!/resume-page.png
+figma-terminal-state.json

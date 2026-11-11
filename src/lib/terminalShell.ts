@@ -1,0 +1,119 @@
+import { content } from './content';
+import { contactOutput, createTerminalFiles, displayDirectory, homeDirectory, resolveTerminalPath } from './terminalFiles';
+import type { TerminalFile } from './terminalFiles';
+import { colorTerminalEntry, terminalColors as colors } from './terminalColors';
+
+export type TerminalResult = string | TerminalFile | undefined;
+
+export interface TerminalCommand {
+  description: string;
+  usage?: string;
+  fn: (...args: string[]) => TerminalResult;
+}
+
+class TerminalFileSystem {
+  private directory = homeDirectory;
+  private readonly files = createTerminalFiles();
+  private readonly directories = new Set(['/', '/home', homeDirectory, `${homeDirectory}/projects`, `${homeDirectory}/interests`]);
+
+  constructor(private readonly onResume: () => void, private readonly onDirectory: (path: string) => void) {}
+
+  path(value?: string) { return resolveTerminalPath(this.directory, value); }
+  pwd() { return this.directory; }
+
+  entries(target: string, hidden: boolean) {
+    const prefix = target === '/' ? '/' : `${target}/`;
+    return [...this.directories, ...this.files.keys()].filter(item => item !== target && item.startsWith(prefix))
+      .map(item => item.slice(prefix.length)).filter(item => item && !item.includes('/'))
+      .filter(item => hidden || !item.startsWith('.')).sort()
+      .map(item => this.directories.has(`${prefix}${item}`) ? `${item}/` : item);
+  }
+  cd(value?: string) {
+    const target = this.path(value);
+    if (!this.directories.has(target)) { return colors.red(`cd: ${value}: No such directory`); }
+    this.directory = target;
+    this.onDirectory(displayDirectory(this.directory));
+    return '';
+  }
+  ls(...args: string[]) {
+    const invalid = args.find(value => value.startsWith('-') && !/^-a+$/.test(value));
+    if (invalid) { return colors.red(`ls: unsupported option ${invalid}`); }
+    const target = this.path(args.find(value => value && !value.startsWith('-')) ?? '.');
+    if (this.files.has(target)) { return colorTerminalEntry(target.split('/').pop() ?? target); }
+    if (!this.directories.has(target)) { return colors.red(`ls: ${target}: No such file or directory`); }
+    return this.entries(target, args.some(value => value.includes('a') && value.startsWith('-'))).map(colorTerminalEntry).join('\n');
+  }
+  cat(value?: string) {
+    if (!value) { return colors.yellow('Usage: cat <file>'); }
+    const target = this.path(value);
+    if (this.directories.has(target)) { return colors.red(`cat: ${value}: Is a directory`); }
+    const file = this.files.get(target);
+    if (!file) { return colors.red(`cat: ${value}: No such file`); }
+    if (file.resume) { this.onResume(); return colors.cyan(file.text); }
+    return file;
+  }
+  connect() {
+    if (!this.files.has(this.path('./connect.sh'))) { return colors.red('./connect.sh: No such file'); }
+    return contactOutput();
+  }
+}
+
+const helpText = ['help  ls [-a] [path]  cd [path]  pwd', 'cat <file>  whoami  clear  open resume.pdf',
+  '', 'Commands from this portfolio:', 'whoami --about', 'ls ./projects/     ls ./interests/',
+  'cat ./skills.conf  cat ./education.log', './connect.sh', '',
+  'Tab: complete  |  Up/Down: history', 'Try ls -a. Some files are a little shy.'].join('\n');
+
+function whoami(files: TerminalFileSystem, option?: string) {
+  if (option === '--about') { return files.cat(`${homeDirectory}/about.md`); }
+  if (option) { return colors.yellow('Usage: whoami [--about]'); }
+  return colors.green(new URL(content.identity.githubUrl).pathname.slice(1));
+}
+
+function createCommands(files: TerminalFileSystem): Record<string, TerminalCommand> {
+  const commands: Record<string, TerminalCommand> = {
+    help: { description: 'Show commands', fn: () => colors.cyan(helpText) },
+    ls: { description: 'List files', usage: 'ls [-a] [path]', fn: (...args) => files.ls(...args) },
+    cd: { description: 'Change directory', usage: 'cd [path]', fn: value => files.cd(value) },
+    pwd: { description: 'Print directory', fn: () => colors.blue(files.pwd()) },
+    cat: { description: 'Read a file', usage: 'cat <file>', fn: value => files.cat(value) },
+    whoami: { description: 'Show identity or about text', usage: 'whoami [--about]', fn: option => whoami(files, option) },
+    open: { description: 'Preview resume or read portfolio', usage: 'open resume.pdf', fn: value => files.cat(value === './portfolio' ? `${homeDirectory}/about.md` : value) },
+    './connect.sh': { description: 'Show contact details', fn: () => files.connect() },
+    coffee: { description: 'Take a break', fn: () => '  ( (\n   ) )\n .------.\n | Java |]\n `------\'\nCoffee compiled successfully. No beans were harmed.' },
+    sudo: { description: 'Ask nicely', fn: () => colors.yellow('visitor is not in the sudoers file. Try coffee instead.') },
+  };
+  return commands;
+}
+
+export function createTerminalShell(onResume: () => void, onDirectory: (path: string) => void, onClear: () => void) {
+  const files = new TerminalFileSystem(onResume, onDirectory);
+  const commands = createCommands(files);
+  commands.clear = { description: 'Clear the terminal', fn: () => { onClear(); return ''; } };
+  function complete(input: string) {
+    const split = input.lastIndexOf(' ');
+    if (split < 0) { return commonPrefix(Object.keys(commands).filter(name => name.startsWith(input)), input); }
+    const argument = input.slice(split + 1);
+    if (input.slice(0, split) === 'whoami' && argument.startsWith('-')) {
+      return input.slice(0, split + 1) + commonPrefix(['--about'].filter(value => value.startsWith(argument)), argument);
+    }
+    const slash = argument.lastIndexOf('/');
+    const parent = argument.slice(0, slash + 1);
+    const fragment = argument.slice(slash + 1);
+    const matches = files.entries(files.path(parent || '.'), true).filter(name => name.startsWith(fragment));
+    return input.slice(0, split + 1) + parent + commonPrefix(matches, fragment);
+  }
+  function execute(input: string): TerminalResult {
+    const [name, ...args] = input.trim().split(/\s+/);
+    if (!name) { return ''; }
+    if (!Object.hasOwn(commands, name)) { return colors.red('Command not found. Type help.'); }
+    return commands[name].fn(...args);
+  }
+  return { commands, complete, execute };
+}
+
+function commonPrefix(values: string[], fallback: string) {
+  if (!values.length) { return fallback; }
+  let prefix = values[0];
+  while (!values.every(value => value.startsWith(prefix))) { prefix = prefix.slice(0, -1); }
+  return prefix;
+}

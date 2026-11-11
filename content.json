@@ -1,0 +1,217 @@
+{
+  "locale": "zh-CN",
+  "identity": {
+    "name": null,
+    "phone": null,
+    "email": "solowzl@outlook.com",
+    "githubUrl": "https://github.com/Ovo307000",
+    "resumeUrl": null
+  },
+  "site": {
+    "brand": "ops.portfolio",
+    "signature": "DEVELOPMENT / DEPLOYMENT / OPERATIONS",
+    "footer": "开发 · 部署 · 运维",
+    "copyright": "个人作品集 / 2026"
+  },
+  "navigation": ["[01] 关于我", "[02] 项目实践", "[03] 技术能力", "[04] 个人兴趣"],
+  "retro": {
+    "edition": "PERSONAL TERMINAL / V.01",
+    "prompt": "PORTFOLIO://LOCAL",
+    "heroCommand": "$ open ./portfolio",
+    "footerPrompt": "END OF FILE / 保持好奇，继续探索。"
+  },
+  "hero": {
+    "eyebrow": "Web 与 Java 项目开发 / 应用部署与运维",
+    "title": "从应用开发，",
+    "accent": "到部署与运维。",
+    "summary": "计算机科学与技术专业本科，有 Java、TypeScript 项目开发与 Linux 应用部署实践。项目涉及业务平台、Web 应用与模组开发工作区，也关注 Docker 部署、日志排查和脚本辅助。",
+    "primaryAction": "查看项目实践",
+    "secondaryAction": "在线预览简历",
+    "scrollHint": "向下了解我的实践"
+  },
+  "terminal": {
+    "title": "profile.yaml",
+    "command": "$ cat ./profile.yaml",
+    "roleKey": "role",
+    "roleValue": "Java Development / Linux Operations",
+    "focusKey": "focus",
+    "focusValue": "Development / Deployment / Debugging",
+    "stackKey": "stack",
+    "stackValue": "Java / Linux / Docker / Nginx",
+    "scriptKey": "scripts",
+    "scriptValue": "Shell / Python",
+    "caption": "把项目中的部署与维护过程，逐步沉淀为实践。"
+  },
+  "projectsSection": {
+    "eyebrow": "$ ls ./projects/",
+    "title": "项目实践",
+    "description": "从 Java 业务系统到 TypeScript Web 应用，以及游戏模组开发工作区。",
+    "developmentLabel": "开发实践",
+    "operationsLabel": "部署与维护",
+    "repositoryLabel": "项目仓库 · 待提供"
+  },
+  "projects": [
+    {
+      "id": "sky-take-out",
+      "number": "02",
+      "name": "苍穹外卖",
+      "englishName": "SKY-TAKE-OUT",
+      "type": "餐饮管理与点餐系统",
+      "status": "手写项目 / 已成功运行",
+      "summary": "餐饮管理与点餐系统，覆盖商家后台和点餐小程序。",
+      "developmentHighlights": [
+        "管理后台：菜品、套餐、订单与员工管理。",
+        "点餐小程序：浏览、下单与支付等业务流程。"
+      ],
+      "highlights": [
+        "在 Linux 搭建 JDK、MySQL、Redis、Nginx 运行环境并部署应用。",
+        "编写 Dockerfile，以 Docker Compose 编排应用与数据库服务。",
+        "配置 Nginx 反向代理，结合容器状态和应用日志排查异常。",
+        "使用 Shell 与 crontab 执行部署检查、日志切割及数据库备份。"
+      ],
+      "technologies": ["Linux", "Docker Compose", "Nginx", "MySQL", "Redis", "Shell"],
+      "repositoryUrl": null,
+      "practiceLabel": "部署与维护",
+      "teaser": "餐饮管理后台与点餐小程序；Java 开发、容器部署与日常维护。",
+      "coverBrand": "苍穹外卖", "coverHeadline": "餐饮管理与点餐"
+    },
+    {
+      "id": "lease",
+      "number": "03",
+      "name": "尚庭公寓",
+      "englishName": "LEASE",
+      "type": "公寓租赁平台",
+      "status": "手写项目 / 已成功运行",
+      "summary": "公寓租赁平台，连接房源管理与移动端租赁业务。",
+      "developmentHighlights": [
+        "移动端业务：找房、看房预约与租约管理。",
+        "管理后台：房源、租赁与用户管理。"
+      ],
+      "highlights": [
+        "在 Linux 安装并配置 MySQL、Redis、MinIO、Nginx 等依赖服务。",
+        "使用 Docker Compose 编排服务，配置 Nginx 反向代理。",
+        "编写 Shell 脚本完成服务启停、数据备份与日志清理。",
+        "检查服务、磁盘和内存，结合日志排障并定期清理磁盘。"
+      ],
+      "technologies": ["Linux", "Docker Compose", "MinIO", "Nginx", "MySQL", "Shell"],
+      "repositoryUrl": null,
+      "practiceLabel": "部署与维护",
+      "teaser": "房源管理与移动端租赁业务；Java 开发与多服务部署。",
+      "coverBrand": "尚庭公寓", "coverHeadline": "房源 · 预约 · 租约"
+    },
+    {
+      "id": "pawlink", "number": "01", "name": "PawLink", "englishName": "ANIMAL RESCUE PLATFORM",
+      "type": "动物救助与领养平台", "status": "Web 应用 / 业务与工程实践",
+      "summary": "中文动物救助与领养平台，涵盖动物信息、领养申请、用户仪表盘与管理功能。",
+      "developmentHighlights": ["动物信息发布、浏览与领养申请流程。", "用户仪表盘与管理员审核管理。"],
+      "highlights": ["使用 Next.js、React 与 TypeScript 组织 Web 功能。", "通过 Prisma 与 PostgreSQL 组织数据访问。", "按领域划分 Server Actions、组件、数据访问与类型。", "配置 lint、test、typecheck 等独立检查脚本。"],
+      "technologies": ["TypeScript", "Next.js", "React", "Prisma", "PostgreSQL", "Tailwind CSS"],
+      "repositoryUrl": "https://github.com/Ovo307000/pawlink", "practiceLabel": "工程实践",
+      "teaser": "TypeScript Web 应用，涵盖动物信息、领养申请与用户管理。",
+      "coverBrand": "PawLink", "coverHeadline": "用领养替代购买"
+    },
+    {
+      "id": "kcd2-mods", "number": "04", "name": "KCD II 模组工作区", "englishName": "MODDING WORKSPACE",
+      "type": "游戏模组开发工作区", "status": "开发工作区 / 持续实践",
+      "summary": "围绕《天国：拯救 2》组织 Lua 模组、原生插件、分析记录与参考资料。",
+      "developmentHighlights": ["Lua 脚本与原生 ASI 插件方向的开发实践。", "整理玩法改动、分析记录与代码入口。"],
+      "highlights": ["按分析、代码、参考资料与工作区划分仓库结构。", "涵盖 Lua 脚本与 C++ 原生插件方向。", "README 记录模组装载、验证与打包流程。", "整理装载方式与发布前验证的检查事项。"],
+      "technologies": ["Lua", "C++", "ASI", "原生插件", "模组开发", "分析记录"],
+      "repositoryUrl": "https://github.com/Ovo307000/kcd2-mods", "practiceLabel": "工作区实践",
+      "teaser": "Lua 与原生插件方向的模组开发、分析和验证工作区。",
+      "coverBrand": "KCD II", "coverHeadline": "模组开发工作区"
+    }
+  ],
+  "skillsSection": {
+    "eyebrow": "$ cat ./skills.conf",
+    "title": "技术能力",
+    "description": "应用与 Web 开发、系统与容器部署，以及数据服务和模组实践。"
+  },
+  "skills": [
+    {"number": "03", "title": "系统与脚本", "tools": "Linux · Shell · Python · crontab", "description": "用户与权限、进程和磁盘管理；编写部署、定时任务与日志监控脚本。", "icon": "terminal"},
+    {"number": "04", "title": "容器与部署", "tools": "Docker · Compose · Nginx · Tomcat", "description": "构建镜像，编排多服务应用，配置反向代理与运行环境。", "icon": "container"},
+    {"number": "05", "title": "数据与云服务", "tools": "MySQL · Redis · MinIO · OSS / S3", "description": "数据库操作与备份；有阿里云、AWS 和 Cloudflare 配置实践。", "icon": "database"},
+    {"number": "01", "title": "应用开发", "tools": "Java · Maven · SQL · Git", "description": "通过手写 Java 项目积累业务开发实践，能结合配置与日志排查运行问题。", "icon": "code"},
+    {"number": "02", "title": "Web 开发", "tools": "TypeScript · React · Next.js · Prisma", "description": "PawLink 项目涵盖用户界面、服务端功能与数据访问结构。", "icon": "code"},
+    {"number": "06", "title": "模组实践", "tools": "Lua · C++ · ASI · Git", "description": "在模组工作区中组织脚本、原生插件方向及分析验证资料。", "icon": "gamepad-2"}
+  ],
+  "about": {
+    "eyebrow": "$ whoami --about",
+    "englishDescription": "Computer Science and Technology graduate, working with Java / TypeScript applications and Linux deployments. Projects include food ordering, apartment rental and animal adoption platforms. Exploring Lua and C++ game modding, connecting development, deployment and debugging.",
+    "title": "关于我",
+    "description": "计算机科学与技术专业本科，主要实践方向是 Java / TypeScript 应用开发和 Linux 应用部署。做过餐饮点餐、公寓租赁和动物领养平台，既关注业务功能如何实现，也关注服务部署后能否稳定运行。",
+    "development": "在 Java 项目中，围绕管理后台与移动端业务开展开发和运行实践；在 PawLink 中，涉及 Next.js、React、Prisma 与 PostgreSQL。部署侧使用 Docker Compose、Nginx 和 Shell，结合容器状态与应用日志排查问题。",
+    "exploration": "也在探索 Lua 与 C++ 原生插件方向，把游戏模组开发作为了解软件行为的一条路径。希望把开发、部署和问题定位串起来，让项目不止停留在代码仓库里。",
+    "focusLabel": "专业方向",
+    "focusTitle": "应用开发\n与运维实践",
+    "developmentTitle": "项目实践",
+    "explorationTitle": "技术探索",
+    "tags": ["Java", "TypeScript", "Linux"],
+    "educationTitle": "教育经历",
+    "education": [
+      {"school": "安徽工贸学院", "englishSchool": "Anhui Industry and Trade College", "major": "软件工程", "englishMajor": "Software Engineering", "period": "2020.10 — 2023.06", "logoPath": "assets/school-gongmao.png"},
+      {"school": "安徽财经大学", "englishSchool": "Anhui University of Finance and Economics", "major": "计算机科学与技术", "englishMajor": "Computer Science and Technology", "period": "2024.03 — 2026.06", "logoPath": "assets/school-aufe.png"}
+    ]
+  },
+  "interestsSection": {
+    "eyebrow": "$ ls ./interests/",
+    "title": "个人兴趣",
+    "description": "技术探索、开源工具，以及游戏与模组。"
+  },
+  "interests": [
+    {
+      "number": "01",
+      "title": "技术探索",
+      "terminalName": "technology",
+      "englishDescription": "Technical principles, scripting and software behavior. Learning how features work by investigating practical problems.",
+      "tools": "技术原理 · 脚本实践 · 软件行为",
+      "description": "喜欢弄清一个功能背后的工作原理，不只停留在“能用”。关注脚本、服务运行和软件行为，把遇到的问题当作进一步理解技术的入口。",
+      "icon": "terminal"
+    },
+    {
+      "number": "02",
+      "title": "开源工具",
+      "terminalName": "open-source",
+      "englishDescription": "Development tools, automation and clear documentation. Exploring open-source tools that improve everyday workflows.",
+      "tools": "开发工具 · 自动化 · 文档配置",
+      "description": "关注开源工具如何解决日常工作流中的具体问题，例如文件整理、开发辅助与任务自动化。也在意配置是否清楚、文档是否易读，以及工具能否长期维护。",
+      "icon": "code"
+    },
+    {
+      "number": "03",
+      "title": "游戏与模组",
+      "terminalName": "game-modding",
+      "englishDescription": "Games, Lua scripts, C++ native plugins and mod loading. Organizing code, analysis and references for the Kingdom Come: Deliverance II workspace.",
+      "tools": "Lua · C++ · 模组工作区",
+      "description": "喜欢游戏里的世界与玩法，也对模组如何改变体验感兴趣。关注 Lua 脚本、原生插件和装载流程，在《天国：拯救 2》模组工作区里整理代码、分析记录与参考资料。",
+      "icon": "gamepad-2"
+    }
+  ],
+  "contact": {
+    "eyebrow": "$ ./connect.sh",
+    "title": "简历与联系",
+    "description": "期待应用开发、部署与运维相关的工作机会。",
+    "emailLabel": "solowzl@outlook.com",
+    "githubLabel": "Ovo307000",
+    "resumeLabel": "在线预览简历"
+  },
+  "resumePreview": {
+    "title": "resume.pdf",
+    "privacyHint": "Page 1 / 1",
+    "filePath": "website/resume.pdf",
+    "zoomLabel": "Zoom in",
+    "fitLabel": "Fit width",
+    "downloadLabel": "Download PDF",
+    "downloadStatus": "ready"
+  },
+  "mobile": {
+    "projectsIntro": "点开项目，查看开发内容与工程实践。",
+    "detailAction": "查看项目详情",
+    "resumeAction": "查看 PDF 简历",
+    "educationEyebrow": "EDUCATION"
+  },
+  "educationSection": {
+    "eyebrow": "$ cat ./education.log",
+    "title": "教育经历"
+  }
+}
