@@ -1,16 +1,9 @@
 import { content } from './content';
 import { contactOutput, createTerminalFiles, displayDirectory, homeDirectory, resolveTerminalPath } from './terminalFiles';
-import type { TerminalFile } from './terminalFiles';
 import { colorTerminalEntry, terminalColors as colors } from './terminalColors';
 import { completeTerminalInput } from './terminalCompletion';
-
-export type TerminalResult = string | TerminalFile | undefined;
-
-export interface TerminalCommand {
-  description: string;
-  usage?: string;
-  fn: (...args: string[]) => TerminalResult;
-}
+import { executeTerminalCommand, terminalHelp } from './terminalCommand';
+import type { TerminalCommand, TerminalCommands, TerminalResult } from './terminalCommand';
 
 class TerminalFileSystem {
   private directory = homeDirectory;
@@ -37,15 +30,12 @@ class TerminalFileSystem {
     return '';
   }
   ls(...args: string[]) {
-    const invalid = args.find(value => value.startsWith('-') && !/^-a+$/.test(value));
-    if (invalid) { return colors.red(`ls: unsupported option ${invalid}`); }
     const target = this.path(args.find(value => value && !value.startsWith('-')) ?? '.');
     if (this.files.has(target)) { return colorTerminalEntry(target.split('/').pop() ?? target); }
     if (!this.directories.has(target)) { return colors.red(`ls: ${target}: No such file or directory`); }
-    return this.entries(target, args.some(value => value.includes('a') && value.startsWith('-'))).map(colorTerminalEntry).join('\n');
+    return this.entries(target, args.some(value => value.startsWith('-'))).map(colorTerminalEntry).join('\n');
   }
-  cat(value?: string) {
-    if (!value) { return colors.yellow('Usage: cat <file>'); }
+  cat(value: string) {
     const target = this.path(value);
     if (this.directories.has(target)) { return colors.red(`cat: ${value}: Is a directory`); }
     const file = this.files.get(target);
@@ -59,34 +49,37 @@ class TerminalFileSystem {
   }
 }
 
-const helpText = ['help  ls [-a] [path]  cd [path]  pwd', 'cat <file>  whoami  clear  open resume.pdf',
-  '', 'Commands from this portfolio:', 'whoami --about', 'ls ./projects/     ls ./interests/',
-  'cat ./skills.conf  cat ./education.log', './connect.sh', '',
-  'unlock  lock', 'Tab: complete  |  Up/Down: history', 'Try ls -a. Some files are a little shy.'].join('\n');
-
 const HELP_CAT_INTERVAL = 3;
 const helpCat = ['  /\\_/\\', ' ( o.o )', '  > ^ <'].join('\n');
 
 function whoami(files: TerminalFileSystem, option?: string) {
-  if (option === '--about') { return files.cat(`${homeDirectory}/about.md`); }
-  if (option) { return colors.yellow('Usage: whoami [--about]'); }
+  if (option) { return files.cat(`${homeDirectory}/about.md`); }
   return colors.green(new URL(content.identity.githubUrl).pathname.slice(1));
 }
 
-function createCommands(files: TerminalFileSystem, onHelp: TerminalCommand['fn']): Record<string, TerminalCommand> {
-  const commands: Record<string, TerminalCommand> = {
-    help: { description: 'Show commands', usage: 'help [-h]', fn: onHelp },
-    ls: { description: 'List files', usage: 'ls [-a] [path]', fn: (...args) => files.ls(...args) },
-    cd: { description: 'Change directory', usage: 'cd [path]', fn: value => files.cd(value) },
+function fileCommands(files: TerminalFileSystem): TerminalCommands {
+  return {
+    ls: { description: 'List files', options: [{ name: '-a', repeatable: true }],
+      parameters: [{ name: 'path', kind: 'path' }], examples: ['ls -a', 'ls ./projects/'], fn: (...args) => files.ls(...args) },
+    cd: { description: 'Change directory', parameters: [{ name: 'path', kind: 'directory' }], fn: value => files.cd(value) },
     pwd: { description: 'Print directory', fn: () => colors.blue(files.pwd()) },
-    cat: { description: 'Read a file', usage: 'cat <file>', fn: value => files.cat(value) },
-    whoami: { description: 'Show identity or about text', usage: 'whoami [--about]', fn: option => whoami(files, option) },
-    open: { description: 'Preview resume or read portfolio', usage: 'open resume.pdf', fn: value => files.cat(value === './portfolio' ? `${homeDirectory}/about.md` : value) },
+    cat: { description: 'Read a file', parameters: [{ name: 'file', kind: 'path', required: true }],
+      examples: ['cat ./skills.conf', 'cat ./education.log'], fn: value => files.cat(value) },
+    open: { description: 'Preview resume or read portfolio',
+      parameters: [{ name: 'file', kind: 'path', choices: ['./portfolio'], required: true }],
+      examples: ['open resume.pdf', 'open ./portfolio'], fn: value => files.cat(value === './portfolio' ? `${homeDirectory}/about.md` : value) },
     './connect.sh': { description: 'Show contact details', fn: () => files.connect() },
+  };
+}
+
+function createCommands(files: TerminalFileSystem, onHelp: TerminalCommand['fn']): TerminalCommands {
+  return {
+    help: { description: 'Show commands', options: [{ name: '-h' }], fn: onHelp },
+    ...fileCommands(files),
+    whoami: { description: 'Show identity or about text', options: [{ name: '--about' }], fn: option => whoami(files, option) },
     coffee: { description: 'Take a break', fn: () => '  ( (\n   ) )\n .------.\n | Java |]\n `------\'\nCoffee compiled successfully. No beans were harmed.' },
     sudo: { description: 'Ask nicely', fn: () => colors.yellow('visitor is not in the sudoers file. Try coffee instead.') },
   };
-  return commands;
 }
 
 export function createTerminalShell(onResume: () => void, onDirectory: (path: string) => void,
@@ -95,8 +88,8 @@ export function createTerminalShell(onResume: () => void, onDirectory: (path: st
   let helpCycle = 0;
   function help(...args: string[]) {
     helpCycle = args.length ? 0 : (helpCycle + 1) % HELP_CAT_INTERVAL;
-    const showCat = (args.length === 1 && args[0] === '-h') || (args.length === 0 && helpCycle === 0);
-    const guide = colors.cyan(helpText);
+    const showCat = args.length > 0 || helpCycle === 0;
+    const guide = colors.cyan(terminalHelp(commands));
     if (!showCat) { return guide; }
     return [guide, colors.green(helpCat), colors.cyan('Still need help? Meow.')].join('\n\n');
   }
@@ -105,14 +98,13 @@ export function createTerminalShell(onResume: () => void, onDirectory: (path: st
   commands.unlock = { description: 'Unlock private sections', fn: () => { privacy.unlock(); return ''; } };
   commands.lock = { description: 'Lock private sections', fn: () => { privacy.lock(); return ''; } };
   function complete(input: string) {
-    return completeTerminalInput(input, Object.keys(commands), parent => files.entries(files.path(parent), true));
+    return completeTerminalInput(input, commands, parent => files.entries(files.path(parent), true));
   }
   function execute(input: string): TerminalResult {
     const [name, ...args] = input.trim().split(/\s+/);
     if (!name) { return ''; }
     if (name !== 'help') { helpCycle = 0; }
-    if (!Object.hasOwn(commands, name)) { return colors.red('Command not found. Type help.'); }
-    return commands[name].fn(...args);
+    return executeTerminalCommand(commands, name, args);
   }
   return { commands, complete, execute };
 }
