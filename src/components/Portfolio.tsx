@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { assets } from '../lib/assets';
+import { SiteBackground } from './SiteBackground';
 import { content, projects } from '../lib/content';
 import { HeroSection } from './HeroSection';
 import { AboutSection } from './AboutSection';
@@ -25,7 +25,7 @@ export function Portfolio() {
   return (
     <PrivacyAccessProvider value={privacy}><div className="portfolio" id="top">
       <a className="skip-link" href="#main">跳到主要内容</a>
-      <img className="page-texture" src={assets.pageScanlines} alt="" aria-hidden="true" />
+      <SiteBackground />
       <main id="main">
         <HeroSection onResume={onResume} /><AboutSection />
         <ProjectsSection onProject={setTarget} /><SkillsSection /><EducationTimeline /><InterestsSection />

@@ -1,5 +1,4 @@
 import { content } from '../lib/content';
-import { assets } from '../lib/assets';
 import { Button } from './ui/button';
 import { Icon } from './ui/Icon';
 import { ProfileTerminal } from './ProfileTerminal';
@@ -7,7 +6,6 @@ import { ProfileTerminal } from './ProfileTerminal';
 export function HeroSection({ onResume }: { onResume: () => void }) {
   return (
     <section className="hero" aria-labelledby="hero-title">
-      <img className="hero-texture" src={assets.heroTexture} alt="" aria-hidden="true" />
       <p className="command hero-command">{content.retro.heroCommand}</p>
       <div className="hero-composition">
         <div className="hero-copy">

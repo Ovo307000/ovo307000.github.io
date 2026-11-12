@@ -1,4 +1,3 @@
-import { assets } from '../lib/assets';
 import { content } from '../lib/content';
 import { SectionHeading } from './ui/SectionHeading';
 import { Button } from './ui/button';
@@ -10,7 +9,6 @@ export function ContactSection({ onResume }: { onResume: () => void }) {
   const profile = usePrivacyAccess().access.state.urls?.profile;
   return (
     <section id="contact" className="section contact-section">
-      <img className="contact-texture" src={assets.contactTexture} alt="" aria-hidden="true" />
       <SectionHeading {...content.contact} />
       {!profile && <div className="privacy-blocks">
         <ProtectedPlaceholder title="联系方式" target="contact" />
