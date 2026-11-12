@@ -1,9 +1,10 @@
 import DecryptedText from './react-bits/DecryptedText';
 import { usePrivacyAccess } from './PrivacyAccess';
+import type { ProtectedSection } from '../lib/portfolioDialog';
 
 const MASK = 'PROTECTED / ACCESS\nSHARE CODE REQUIRED';
 
-export function ProtectedPlaceholder({ title, target }: { title: string; target: string }) {
+export function ProtectedPlaceholder({ title, target }: { title: string; target: ProtectedSection }) {
   const { requestUnlock } = usePrivacyAccess();
   return (
     <button type="button" className="protected-placeholder" onClick={() => requestUnlock(target)}

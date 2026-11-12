@@ -16,32 +16,40 @@ import { ResumeViewer } from './ResumeViewer';
 import { ShareCodeTerminal } from './ShareCodeTerminal';
 import { usePortfolioPrivacy } from './usePortfolioPrivacy';
 import { PrivacyAccessProvider } from './PrivacyAccess';
+import type { PortfolioDialog } from '../lib/portfolioDialog';
+
+function PortfolioSections({ onProject }: { onProject: (id: string) => void }) {
+  return <>
+    <main id="main">
+      <SectionReveal><HeroSection /></SectionReveal>
+      <SectionReveal><AboutSection /></SectionReveal>
+      <SectionReveal><ProjectsSection onProject={onProject} /></SectionReveal>
+      <SectionReveal><SkillsSection /></SectionReveal>
+      <SectionReveal><EducationTimeline /></SectionReveal>
+      <SectionReveal><InterestsSection /></SectionReveal>
+      <SectionReveal><ContactSection /></SectionReveal>
+    </main>
+    <SectionReveal><Footer /></SectionReveal>
+  </>;
+}
 
 export function Portfolio() {
-  const [target, setTarget] = useState<string | null>(null);
-  const project = projects.find(item => item.id === target);
+  const [target, setTarget] = useState<PortfolioDialog>(null);
+  const project = target?.kind === 'project' ? projects.find(item => item.id === target.id) : undefined;
   const privacy = usePortfolioPrivacy(setTarget);
-  const { onResume } = privacy;
-  const title = target === 'unlock' ? 'share-code.sh' : project ? `${project.id}.md` : content.resumePreview.title;
+  let title = content.resumePreview.title;
+  if (target?.kind === 'unlock') { title = 'share-code.sh'; }
+  if (project) { title = `${project.id}.md`; }
   return (
-    <PrivacyAccessProvider value={privacy}><div className="portfolio" id="top">
+    <PrivacyAccessProvider value={privacy.value}><div className="portfolio" id="top">
       <a className="skip-link" href="#main">跳到主要内容</a>
       <SiteBackground />
-      <main id="main">
-        <SectionReveal><HeroSection onResume={onResume} /></SectionReveal>
-        <SectionReveal><AboutSection /></SectionReveal>
-        <SectionReveal><ProjectsSection onProject={setTarget} /></SectionReveal>
-        <SectionReveal><SkillsSection /></SectionReveal>
-        <SectionReveal><EducationTimeline /></SectionReveal>
-        <SectionReveal><InterestsSection /></SectionReveal>
-        <SectionReveal><ContactSection onResume={onResume} /></SectionReveal>
-      </main>
-      <SectionReveal><Footer /></SectionReveal>
+      <PortfolioSections onProject={id => setTarget({ kind: 'project', id })} />
       <TerminalDialog title={title} open={target !== null} onClose={privacy.closeDialog} onCloseStart={privacy.cancelUnlock}
-        className={target === 'unlock' ? 'access-dialog' : undefined}>
-        {target === 'unlock' && <ShareCodeTerminal />}
+        className={target?.kind === 'unlock' ? 'access-dialog' : undefined}>
+        {target?.kind === 'unlock' && <ShareCodeTerminal />}
         {project && <ProjectCard project={project} detail />}
-        {target === 'resume' && privacy.access.state.urls && <ResumeViewer urls={privacy.access.state.urls} />}
+        {target?.kind === 'resume' && privacy.urls && <ResumeViewer urls={privacy.urls} />}
       </TerminalDialog>
     </div></PrivacyAccessProvider>
   );

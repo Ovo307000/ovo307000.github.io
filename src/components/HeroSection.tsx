@@ -3,8 +3,10 @@ import { Button } from './ui/button';
 import { Icon } from './ui/Icon';
 import { ProfileTerminal } from './ProfileTerminal';
 import { HeroTitle } from './HeroTitle';
+import { usePrivacyAccess } from './PrivacyAccess';
 
-export function HeroSection({ onResume }: { onResume: () => void }) {
+export function HeroSection() {
+  const { openResume } = usePrivacyAccess();
   return (
     <section className="hero" aria-labelledby="hero-title">
       <p className="command hero-command">{content.retro.heroCommand}</p>
@@ -15,10 +17,10 @@ export function HeroSection({ onResume }: { onResume: () => void }) {
           <p className="hero-summary">{content.hero.summary}</p>
           <div className="hero-actions">
             <Button asChild><a href="#projects"><Icon name="code" />{content.hero.primaryAction}</a></Button>
-            <Button variant="outline" onClick={onResume}><Icon name="file" />{content.hero.secondaryAction}</Button>
+            <Button variant="outline" onClick={openResume}><Icon name="file" />{content.hero.secondaryAction}</Button>
           </div>
         </div>
-        <ProfileTerminal onResume={onResume} />
+        <ProfileTerminal />
       </div>
     </section>
   );

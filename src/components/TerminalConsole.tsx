@@ -9,7 +9,7 @@ import { TerminalAnsi } from './TerminalAnsi';
 import { useTerminalFeedback } from './useTerminalFeedback';
 import { usePrivacyAccess } from './PrivacyAccess';
 
-interface TerminalConsoleProps { intro: ReactNode; onResume: () => void }
+interface TerminalConsoleProps { intro: ReactNode }
 
 function submitCommand(terminal: ConsoleHandle | null, shell: ReturnType<typeof createTerminalShell>, directory: string, input: HTMLInputElement) {
   if (!terminal || !input.value.trim()) { return; }
@@ -46,18 +46,16 @@ function handleConsoleKey(event: KeyboardEvent<HTMLDivElement>, terminal: Consol
   return completeInput(terminal, shell, event.target);
 }
 
-function useConsoleInput(onResume: () => void) {
+function useConsoleInput() {
   const root = useRef<HTMLDivElement>(null);
   const consoleRef = useRef<ConsoleHandle>(null);
-  const resume = useRef(onResume);
   const privacy = usePrivacyAccess();
   const privacyRef = useRef(privacy);
   privacyRef.current = privacy;
-  resume.current = onResume;
   const [directory, setDirectory] = useState('~');
-  const [shell] = useState(() => createTerminalShell(() => resume.current(), setDirectory,
+  const [shell] = useState(() => createTerminalShell(() => privacyRef.current.openResume(), setDirectory,
     () => consoleRef.current?.clearStdout(), {
-      unlock: () => privacyRef.current.requestUnlock(), lock: () => privacyRef.current.access.lock(),
+      unlock: () => privacyRef.current.requestUnlock(), lock: () => privacyRef.current.lock(),
     }));
   const feedback = useTerminalFeedback(root, shell);
   function complete(event: KeyboardEvent<HTMLDivElement>) {
@@ -69,8 +67,8 @@ function useConsoleInput(onResume: () => void) {
   return { root, consoleRef, directory, complete, feedback: feedback.display };
 }
 
-export function TerminalConsole({ intro, onResume }: TerminalConsoleProps) {
-  const { root, consoleRef, directory, complete, feedback } = useConsoleInput(onResume);
+export function TerminalConsole({ intro }: TerminalConsoleProps) {
+  const { root, consoleRef, directory, complete, feedback } = useConsoleInput();
   useLayoutEffect(() => { root.current?.querySelector('input')?.setAttribute('aria-label', 'Terminal command'); }, [root]);
   return (
     <div ref={root} className="terminal-console" lang="en" onKeyDownCapture={complete}>

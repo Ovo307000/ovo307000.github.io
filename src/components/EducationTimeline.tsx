@@ -4,7 +4,7 @@ import { usePrivacyAccess } from './PrivacyAccess';
 import { ProtectedPlaceholder } from './ProtectedPlaceholder';
 
 export function EducationTimeline() {
-  const schools = usePrivacyAccess().access.state.urls?.profile.education;
+  const schools = usePrivacyAccess().profile?.education;
   return (
     <section id="education" className="section education-section">
       <SectionHeading {...content.educationSection} />

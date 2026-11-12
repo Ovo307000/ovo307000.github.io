@@ -1,8 +1,19 @@
 import { createContext, useContext } from 'react';
 import type { ReactNode } from 'react';
-import type { usePortfolioPrivacy } from './usePortfolioPrivacy';
+import type { PrivateProfile } from '../lib/resumeContract';
+import type { PrivateResumeState } from '../lib/privateResumeSession';
+import type { ProtectedSection } from '../lib/portfolioDialog';
 
-export type PrivacyAccessValue = ReturnType<typeof usePortfolioPrivacy>;
+export interface PrivacyAccessValue {
+  profile: PrivateProfile | null;
+  phase: PrivateResumeState['phase'];
+  busy: boolean;
+  error: PrivateResumeState['error'];
+  requestUnlock: (section?: ProtectedSection) => void;
+  finishUnlock: (code: string) => Promise<void>;
+  openResume: () => void;
+  lock: () => void;
+}
 const PrivacyAccessContext = createContext<PrivacyAccessValue | null>(null);
 
 export function PrivacyAccessProvider({ value, children }: { value: PrivacyAccessValue; children: ReactNode }) {

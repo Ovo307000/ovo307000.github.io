@@ -6,7 +6,7 @@ import type { ConsoleHandle } from './TerminalEmulator';
 import { TerminalAnsi } from './TerminalAnsi';
 import { terminalColors as colors } from '../lib/terminalColors';
 
-type AccessState = PrivacyAccessValue['access']['state'];
+type AccessState = Pick<PrivacyAccessValue, 'phase' | 'busy' | 'error'>;
 
 function accessMessage(state: AccessState, previous: string): string {
   if (state.phase === 'private') { return colors.green('Access granted. Protected sections restored in place.'); }
@@ -14,7 +14,7 @@ function accessMessage(state: AccessState, previous: string): string {
     return previous ? colors.cyan('Private sections locked. Use unlock to enter a share code.') : '';
   }
   if (state.busy) { return colors.cyan('Verifying share code...'); }
-  if (state.error === '请输入分享码。') { return colors.red('Enter a share code before continuing.'); }
+  if (state.error === 'empty-code') { return colors.red('Enter a share code before continuing.'); }
   if (state.error) { return colors.red('Access denied. Check the share code and try again. Esc cancels.'); }
   return colors.cyan('Protected data is locked. Enter your share code below. Esc cancels.');
 }
@@ -35,7 +35,7 @@ function handleShareCode(event: KeyboardEvent<HTMLDivElement>, terminal: Console
     event.preventDefault(); event.stopPropagation();
     const code = event.target.value;
     terminal?.clearInput();
-    if (privacy.access.state.phase === 'unlock' && !privacy.access.state.busy) { void privacy.finishUnlock(code); }
+    if (privacy.phase === 'unlock' && !privacy.busy) { void privacy.finishUnlock(code); }
   } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
     event.preventDefault(); event.stopPropagation();
   }
@@ -43,7 +43,7 @@ function handleShareCode(event: KeyboardEvent<HTMLDivElement>, terminal: Console
 
 export function useTerminalAccess(root: RefObject<HTMLDivElement | null>, terminal: RefObject<ConsoleHandle | null>) {
   const privacy = usePrivacyAccess();
-  const { state } = privacy.access;
+  const state = privacy;
   const previous = useRef('');
   useLayoutEffect(() => { const input = root.current?.querySelector('input'); if (input) { configureInput(input); } });
   useEffect(() => {

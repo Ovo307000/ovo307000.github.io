@@ -13,10 +13,10 @@ function ProfileOutput() {
   );
 }
 
-export function ProfileTerminal({ onResume }: { onResume: () => void }) {
+export function ProfileTerminal() {
   return (
     <TerminalWindow title={content.terminal.title} className="profile-terminal">
-      <TerminalConsole intro={<ProfileOutput />} onResume={onResume} />
+      <TerminalConsole intro={<ProfileOutput />} />
     </TerminalWindow>
   );
 }
