@@ -4,7 +4,7 @@
 
 正式分支为 `master`。GitHub Pages 地址为 https://ovo307000.github.io/ 。Cloudflare Pages 从同一仓库的同一分支构建；其最终地址在首次部署成功后记录。
 
-网站目录单独关联上述仓库，保留旧站 Git 历史。父目录的简历资料和设计文件不随此仓库上传。网站运行所需的 `src/`、`assets/`、`content.json`、`resume.pdf`、`resume-page.png` 和许可证必须保留；整页设计截图、验证截图、本地 Figma 状态、依赖目录和环境密钥不上传。
+网站目录单独关联上述仓库，保留旧站 Git 历史。父目录的简历资料和设计文件不随此仓库上传。网站运行所需的 `src/`、`assets/`、`content.json`、`resume-private.enc` 和许可证必须保留；完整明文 PDF、预览、私有资料 JSON、分享码、设计/验证截图、本地 Figma 状态及环境密钥不上传。公开 CI 只构建已有密文，不运行本机生成命令。
 
 ## 每次更新
 

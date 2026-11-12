@@ -2,6 +2,7 @@
 
 本目录已实现 Figma 个人主页，入口为 `src/pages/index.astro`，通过 `Portfolio` 激活 React 交互。内容来自同一份 `content.json`，桌面与手机通过响应式布局共享组件；项目详情和简历预览共用 `TerminalWindow`。
 
+
 ## 关于我 A 版与统一标签（2026-11-12）
 
 用户选择样式 A，并要求“给技能 tag 改到小卡片上，例如项目实践加 java tag”；随后确认个人兴趣、技术能力与关于我、项目标签统一采用“细边小圆角”。先完成 Figma 正式桌面和手机设计，再根据官方设计上下文同步网站。关于我上方保留完整简介，下方是编号双栏，手机纵排；Java / TypeScript / Linux 归项目实践，Lua / C++ 归技术探索，没有新增个人经历或删减正文。
@@ -46,11 +47,11 @@ Figma 标签源为 `206:3326`（Technology / Tag）；技能/桌面兴趣源 `3:
 
 ## 设计与内容
 
-- Figma：[桌面](https://www.figma.com/design/98rP58yj706LdDUn9qfcLG?node-id=108-2140)、[手机](https://www.figma.com/design/98rP58yj706LdDUn9qfcLG?node-id=108-2690)。实施前重新核对当前画框与原型；先读取项目的 `figma-design-to-code` 技能。
+- Figma 设计入口在本机维护工作区管理，公开仓库不发布可能含旧私人资料的设计链接。实施前重新核对当前画框与原型；先读取项目的 `figma-design-to-code` 技能。
 - `README.md` 和 `content.json` 是现有设计与内容的入口；`assets/` 保存素材及许可。先核对数据和当前 Figma 的差异；缺失的个人信息保持空缺。
 - 桌面与手机是分别设计的布局；实现后在浏览器的对应尺寸对照 Figma 整页及局部检查。设计与代码的同步按项目 `AGENTS.md` 执行。
 - React 通过 Astro 官方集成启用，首页使用 `client:load`。按钮由 shadcn CLI 安装后适配，复用本地 `cn`、CVA 与 Radix Slot；原生 `dialog.showModal()` 提供焦点隔离和 Escape 关闭。现有 Motion `useAnimate` 负责从入口展开（360ms）、关闭回缩（220ms）和最大化/还原（300ms）；关闭动画完成后再清空内容，“减少动态效果”时立即完成。
-- `src/lib/assets.ts` 通过 Vite URL 导入发布图片、SVG 和 PDF。四张封面与本地原素材的 SHA256 相同，因此复用原文件；校徽及特殊矢量来自官方 Figma MCP。Noto Sans SC 和 IBM Plex Mono 通过 Fontsource 本地打包。许可仍在 `assets/` 和 `LUCIDE-LICENSE.txt`，shadcn 许可另存 `SHADCN-LICENSE.txt`。
+- `src/lib/assets.ts` 通过 Vite URL 导入公开图片、SVG 和私有资料密文，不导入明文 PDF 或预览。四张封面与本地原素材的 SHA256 相同，因此复用原文件；学校校徽只在加密资料内，解锁后创建临时 Blob URL。Noto Sans SC 和 IBM Plex Mono 通过 Fontsource 本地打包。许可仍在 `assets/` 和 `LUCIDE-LICENSE.txt`，shadcn 许可另存 `SHADCN-LICENSE.txt`。
 
 ## 组件实现顺序
 
@@ -61,7 +62,7 @@ Figma 标签源为 `206:3326`（Technology / Tag）；技能/桌面兴趣源 `3:
 5. `DirectoryItem`、`SkillsSection`、`EducationTimeline`、`InterestsSection`。
 6. `ResumeViewer`、`ContactSection`、`Footer`，由 `Portfolio` 组合。
 
-项目和技能按 JSON 的展示序号排序，不改变数组下标。手机项目摘要与桌面/详情共用同一项目对象；无仓库 URL 的项目不会生成虚构链接。全部简历入口打开同一脱敏 PDF；预览沿用原页图片，支持相对适宽的50%–300%缩放和滚动，下载交付原 PDF。
+项目和技能按 JSON 的展示序号排序，不改变数组下标。手机项目摘要与桌面/详情共用同一项目对象；无仓库 URL 的项目不会生成虚构链接。受保护区块用随机乱码占位，点击后首页终端接管分享码输入和提示；全页只维护一个解锁状态。成功后资料在原区块显示，完整 PDF 沿用原查看器，支持50%–300%缩放及原文件下载，不再维护独立脱敏副本或额外表单。`unlock`、`lock` 接入既有终端命令表；终端不输出实际私有字段。
 
 ## 验证与经验
 

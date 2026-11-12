@@ -1,46 +1,42 @@
 # 个人网站主页
 
-[打开 Figma 设计](https://www.figma.com/design/98rP58yj706LdDUn9qfcLG?node-id=108-2140) · [手机设计](https://www.figma.com/design/98rP58yj706LdDUn9qfcLG?node-id=108-2690)
+[访问网站](https://ovo307000.github.io/)
 
 中文求职主页，展示应用开发、Web 开发与 Linux 运维实践。采用用户确认的“终端手册式”：命令行标题、整齐对齐、细分隔线、少量荧光绿和克制扫描线；正文保持开放排版，保留认可的四张照片渐变项目封面。手机纵向重排同一份首屏、专业方向、完整介绍、项目实践和技术探索，保留双列技能与纵向教育时间线。两端项目和 PDF 均放入首页同源终端外壳。当前已实现 Astro + React 网站并发布至 Vercel；Figma 保留可编辑设计与原型连线。
 
 ## 内容数据
 
-`content.json` 是结构化内容来源。简历事实以当前 Figma 简历为准，新增项目经用户授权用 gh 核对仓库 README、项目结构和依赖清单。用户后续要求补全邮箱和 GitHub：邮箱 `solowzl@outlook.com` 来自新版 Figma 简历的 `20:5`；主页 `https://github.com/Ovo307000` 与简历 `4:5` 及 `gh api user` 一致。桌面和手机均采用图标＋邮箱／账号文字按钮，设置 mailto／GitHub URL，正式页和原型同步。`identity` 的姓名、手机号、简历 URL 及两个 Java 项目的仓库 URL 仍为 `null`；PawLink、KCD2 保留公开仓库链接。私有项目细节未写入主页。到岗状态、地点字段及对应图层和变量已移除，网站 PDF 副本中的城市文字也已实际删除。本次补全联系区不修改原简历或重新导出 PDF，PDF 预览仍保留脱敏版本。
-
-Figma 的 `Content · zh-CN` 集合包含 224 个 STRING 变量。变量路径对应 JSON 字段，例如 `hero/summary`、`projects/0/name`、`skills/2/description`。两端首屏、章节标题、专业方向、简介及两条特征说明共用变量；不再保留手机专用的同义标题和删减版关于我文案。项目、技能、兴趣通过属性或文字绑定共享内容；手机项目只保留版面所需的摘要，完整正文在终端内沿用原项目卡片。教育的 `logoPath` 指向原有校徽资源。姓名、手机号及下载地址仍为空，邮箱与 GitHub 沿用已核对值。
-
-JSON 已通过 `src/lib/content.ts` 接入 Astro + React 网站，桌面、手机与项目弹窗共用同一数据。修改本地 JSON 不会自动同步远程 Figma；需要同步相应 Content 变量。新增、移除或重排项目与技能还需调整对应实例，数组下标变化时同步检查变量路径。不要把缺失字段替换成虚构个人资料或示例联系方式。
+`content.json` 仅保存公开项目、技能与兴趣。教育、联系方式及完整简历位于加密资料中，成功验证分享码后在原区块恢复。所有入口共用同一页面解锁状态；不将私密资料预先放入隐藏 DOM。
 
 ## 前端实现（2026-11-10）
 
 已按组件清单逐个实现全部主页区块、四项目详情和简历预览；共用按钮、章节标题、终端外壳、项目正文及目录条目，跨屏通过响应式布局重排。运行 `npm run dev` 预览，`npm run check` 和 `npm run build` 验证。组件入口、素材来源和维护经验见 [开发交接](DEVELOPMENT.md)，逐项验收与恢复方法见 [实施计划](../docs/exec-plans/completed/website-implementation.md)。[Vercel 正式页面](https://ops-portfolio-five.vercel.app/) 已发布；终端组件使用英文等宽字体，提供红灯关闭、禁用黄灯、绿灯最大化/还原及开关动画，手机菜单与终端输出有过渡效果。
 
-简历下载已接入现有 `resume.pdf`；预览沿用同一文件的渲染页，可放大、适宽和滚动。网站标签与 Figma 共用 PDF 按钮 `106:2079`、变量 `resumePreview/downloadLabel` 均为“Download PDF”，Figma 正常与最大化 PDF 状态已同步。Figma 原型中的下载动作仍只是设计连线，实际下载在浏览器执行。
+简历预览和下载只读取解锁后创建的临时资源，沿用原查看器的缩放、适宽和滚动功能。
 
 ## 设计结构
 
-- 页面：`01 · 主页 / Desktop + Mobile`。
-- 桌面主组件：`108:2140`，1440×5363；手机主组件：`108:2690`，390×6184。原画框已提升为主组件，原型分别引用 `108:2141`、`108:2691`，不再各维护一份页面布局。
-- 项目主组件：`3:223`；技能主组件：`3:299`；组件区：`3:49`。
-- 终端主组件仍为 `90:1552`。两端首页及原型、八个项目弹窗和三个 PDF 状态共 15 个实例，均继承黑色背景、12px 圆角、44px 标题栏和同一泛光，外壳外观覆盖为 0。标题与内容使用 `Title#90:0` 和 `Content` 插槽；44px 关闭热区和 CLOSE 行为在主组件维护，通过 `Interactive close#105:0` 控制是否启用。
-- 首页保留 `Terminal / surrounding background`；11 个正式弹窗的遮罩共用 `Overlay / backdrop` 画笔样式。泛光只在终端主组件维护。旧的独立预览板已移除，节点入口见 [Figma 状态](../docs/design-previews/website/figma-terminal-state.json)。
-- 原型入口仍为桌面 `26:790`（1440×1000）、手机 `26:1294`（390×844）。入口分别引用对应页面主组件；项目及简历设置 OVERLAY，关闭设置 CLOSE，手机 PDF 适宽与放大用 SWAP。连线结构已写入，实际点击未通过播放验收。
-- PDF 预览：桌面 `15:558`、手机 `15:690`、手机放大 `21:1067`；四个手机项目详情为 `21:1093`、`21:1178`、`21:1261`、`21:1350`。
-- 四个封面保留原组件 `29:1211`、`32:1194`、`32:1229`、`32:1264`，照片、类别条、渐变和原生标题不变。手机摘要沿用 342×170，弹窗内部为 334×170；照片按画幅裁切。手机四个摘要共用 `102:1621`，完整正文仍用 `3:223`。
-- 教育区保留根节点桌面 `21:928`、手机 `21:1622`；桌面时间线 `39:1207` 横向连接两段经历，手机 `39:1233` 纵向连接。校徽组件 `39:1198`、`39:1200` 复用当前简历中的两张徽章，桌面 52px、手机 48px；八个正式页和原型实例关联同一组件。
-- 关于我位于项目实践之前。两端的项目实践／技术探索共用唯一特征行组件 `43:1202`，标题、说明和图标通过属性区分；旧平行主组件已删除。手机兴趣三条共用 `111:2446`。两端保持开放正文、图标和细线分隔。
-- 桌面首屏终端采用圆角 macOS 窗口与左侧红黄绿控制钮，标题居中显示 `profile.yaml`；旧字符控制符、右上角 CRT 装饰文案及职业标签前状态点已删除。项目按实际阅读顺序编号：PawLink 01、苍穹外卖 02、尚庭公寓 03、KCD II 04；JSON 数组索引保持原字段路径，`number` 是展示序号，不能用数组下标生成可见编号。
-- `Theme · Terminal` 包含颜色、间距与 `radius/control` 变量。当前中文使用 Noto Sans SC，终端标签和品牌使用 IBM Plex Mono。
-- 操作按钮继续复用 SDS Button：4px 圆角、48px 高、16px 图标和 8px 图文间距。手机首屏两按钮、四个项目入口及联系区三按钮均为内容区等宽；普通页面为 342px，弹窗按内边距适配。mail `65:1242`、GitHub `65:1245`、file-text `66:1269` 和项目图标 `3:71` 保留；原有固定绿色图标描边改绑统一强调色。
-- 导航按阅读顺序为关于我 01、项目实践 02、技术能力 03、个人兴趣 04，两个桌面入口的滚动目标同步重排。技能按展示顺序为应用开发 01、Web 开发 02、系统与脚本 03、容器与部署 04、数据与云服务 05、模组实践 06；兴趣为 01—03。重排只修改展示编号，不改变底层数据路径。
-- 初次设计记录位于 `../docs/exec-plans/completed/personal-homepage.md`，当前修改与待验证项位于 `../docs/exec-plans/active/personal-homepage-crt.md`。
+可编辑设计及状态表在私有维护工作区保存，公开仓库不提供可能包含私人资料的设计链接。首页终端只负责分享码输入与提示，资料回到原区块显示。
 
-## 简历 PDF
+## 隐私区块与分享码
 
-`resume.pdf` 来自当前 [Figma 简历 2:2](https://www.figma.com/design/ElHArw0x581XjjlxG7JAlO?node-id=2-2) 的官方 PDF 导出，保留原始绿色终端版式。一页 A4，595.28×841.89pt。网站副本对姓名、电话、邮箱、GitHub、到岗状态和地点做实际文本删除及必要占位处理，清除链接与原元数据；原始简历文件及原 Figma 简历不改动。
+页面只维护一份完整资料，不另做删减版 PDF。完整 PDF、预览、邮箱及教育明细和校徽一并使用 [StatiCrypt](https://github.com/robinmoisson/staticrypt) 加密为 `resume-private.enc`。未解锁时，原区块显示 [use-scramble](https://github.com/tol-is/use-scramble) 驱动的随机乱码占位；占位字符不来自真实资料，页面也不通过 CSS 隐藏真实内容。公开构建不需要私有源文件或分享码。
 
-`resume-page.png` 是该 PDF 的渲染页。共用阅读器为 `106:2081`，原页组件 `117:2291` 保留矩形资源 `106:2080`，锁定纸张比例并适宽；纸张放在独立的原生滚动插槽 `117:2292`。三个状态均保持工具栏在视口内，只有纸张随适宽／放大改变尺寸，避免放大后控件移出屏幕。外壳直接用首页终端，不另排一份简历。网站现已接入原 PDF 下载，按钮显示“Download PDF”；Figma 滚动和放大只是原型状态，不等同于浏览器原生 PDF 引擎。
+点击乱码区块后，首页现有终端负责提示、输入和验证反馈。分享码遮蔽显示，不回显、不进入命令历史或补全。成功后教育和联系方式回原区块显示，简历仍用原查看器预览和下载；终端不承载这些内容。输入 `unlock` 开始验证，`Esc` 取消，`lock` 隐藏全部私有区块并释放临时 Blob URL，刷新也回到锁定态。关闭 PDF 查看器不退出本页已解锁状态。分享码不写入源码、网址、日志或浏览器持久存储。
+
+维护者在本机更新完整资料后运行：
+
+```bash
+npm run resume:generate            # 重新加密，复用本机已有分享码
+npm run resume:generate -- --rotate # 主动生成新分享码并重新加密
+```
+
+生成命令读取本机完整 PDF、预览，以及 `%LOCALAPPDATA%/ResumePortfolio/private-details.json` 中的邮箱、教育和 Base64 PNG 校徽，路径可通过 `--pdf` / `--preview` / `--details` 指定。分享码保存在同目录的 `share-code.txt`，不输出码本身；可用 `--code-file` 指定其他仓库外路径。资料源和分享码均须在网站仓库之外。更新密文后仍需检查、构建和发布；完整源文件、资料 JSON、分享码及解锁截图均不提交。
+
+当前按用户确认采用纯静态版，不提供次数、到期或服务端撤销；持码者可转发或保存已解锁资料。轮换后新部署使用新码，已下载的旧副本不能撤回。过去公开 Git 记录及旧部署可能含此前公开的邮箱和教育信息，本轮不改写历史。设计稿在维护工作区管理，公开仓库不再提供可能包含旧私人资料的设计链接。
+
+轮换先在码文件旁保存 `.pending` 恢复码，全部写入成功才删除。中途失败时保留它，不覆盖或发布不匹配的文件；先用该码核对候选密文，再将它保存为正式码。已有恢复文件时生成会停止，避免丢失尚未处理的码。
+
 
 ## 验证
 
@@ -94,6 +90,8 @@ JSON 已通过 `src/lib/content.ts` 接入 Astro + React 网站，桌面、手�
 - 苍穹外卖：Anna Pelzer 的 [bowl of vegetable salads](https://unsplash.com/photos/bowl-of-vegetable-salads-IGfIGP5ONV0)，保存为 `assets/sky-food.jpg`，适用 [Unsplash License](https://unsplash.com/license)。这是餐饮主题照片，非项目实际页面或菜品数据。
 - 尚庭公寓：[仓库房屋图片](https://github.com/Ovo307000/lease/blob/master/rentHouseH5/src/assets/my_room_bg.png)，保存为 `assets/lease-house.png`；仓库 MIT 许可原文保存于 `assets/LEASE-LICENSE.txt`。不将示意照片称为真实在租房源。
 - KCD II：[官方 Steam 商店](https://store.steampowered.com/app/1771300/Kingdom_Come_Deliverance_II/) 的媒体图 `ss_709f3329562cd2cfe6db70bac908b3e72eaef83b.1920x1080.jpg`，保留上方 1920×720 区域以显示城堡，保存为 `assets/kcd2-scene.jpg`。游戏画面版权属于 Warhorse Studios / Deep Silver；用于标识目标游戏，非本工作区模组的运行成果。
-- 校徽：从上述当前 Figma 简历的原生 PDF 图片对象中提取，保存为 `assets/school-gongmao.png`、`assets/school-aufe.png`，与原简历徽章逐图核对后复用；徽章是独立资源，日期、学校、专业和时间线仍为可编辑图层。
+- 校徽：仅保存在加密资料内，解锁后生成临时资源，不发布独立明文图片。
 
 本任务新增网站资料，未修改原有简历、PDF 或原简历 Figma 文件。
+
+StatiCrypt 3.5.4 与 use-scramble 2.2.15 的 MIT 许可分别保存在 STATICRYPT-LICENSE.txt 和 USE-SCRAMBLE-LICENSE.txt。
