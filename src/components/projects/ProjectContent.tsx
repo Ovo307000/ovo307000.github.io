@@ -1,5 +1,6 @@
 import { content, type Project } from '../../lib/content';
 import { assets } from '../../lib/assets';
+import { TagList } from '../ui/TagList';
 
 function PracticeList({ title, items }: { title: string; items: string[] }) {
   return (
@@ -17,7 +18,7 @@ export function ProjectContent({ project }: { project: Project }) {
       <p>{project.summary}</p>
       <PracticeList title={content.projectsSection.developmentLabel} items={project.developmentHighlights} />
       <PracticeList title={project.practiceLabel} items={project.highlights} />
-      <div className="project-technologies">{project.technologies.map(tag => <span className="tag" key={tag}>{tag}</span>)}</div>
+      <TagList tags={project.technologies} />
     </div>
   );
 }

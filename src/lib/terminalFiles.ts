@@ -28,7 +28,7 @@ export function contactOutput(): TerminalFile {
 
 function sectionFiles(): [string, TerminalFile][] {
   const about = `# About me\n\n${content.about.englishDescription}`;
-  const toolkit = skills.map(skill => `[${skill.number}]\ntools = ${skill.tools.replaceAll(' · ', ', ')}`).join('\n\n');
+  const toolkit = skills.map(skill => `[${skill.number}]\ntools = ${skill.tools.join(', ')}`).join('\n\n');
   const education = content.about.education.map(entry =>
     `${entry.period.replace(' — ', ' -> ')}\n${entry.englishSchool}\n${entry.englishMajor}`).join('\n\n');
   const contact = contactOutput().text;

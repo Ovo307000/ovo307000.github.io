@@ -128,12 +128,12 @@
     "description": "应用与 Web 开发、系统与容器部署，以及数据服务和模组实践。"
   },
   "skills": [
-    {"number": "03", "title": "系统与脚本", "tools": "Linux · Shell · Python · crontab", "description": "用户与权限、进程和磁盘管理；编写部署、定时任务与日志监控脚本。", "icon": "terminal"},
-    {"number": "04", "title": "容器与部署", "tools": "Docker · Compose · Nginx · Tomcat", "description": "构建镜像，编排多服务应用，配置反向代理与运行环境。", "icon": "container"},
-    {"number": "05", "title": "数据与云服务", "tools": "MySQL · Redis · MinIO · OSS / S3", "description": "数据库操作与备份；有阿里云、AWS 和 Cloudflare 配置实践。", "icon": "database"},
-    {"number": "01", "title": "应用开发", "tools": "Java · Maven · SQL · Git", "description": "通过手写 Java 项目积累业务开发实践，能结合配置与日志排查运行问题。", "icon": "code"},
-    {"number": "02", "title": "Web 开发", "tools": "TypeScript · React · Next.js · Prisma", "description": "PawLink 项目涵盖用户界面、服务端功能与数据访问结构。", "icon": "code"},
-    {"number": "06", "title": "模组实践", "tools": "Lua · C++ · ASI · Git", "description": "在模组工作区中组织脚本、原生插件方向及分析验证资料。", "icon": "gamepad-2"}
+    {"number": "03", "title": "系统与脚本", "tools": ["Linux", "Shell", "Python", "crontab"], "description": "用户与权限、进程和磁盘管理；编写部署、定时任务与日志监控脚本。", "icon": "terminal"},
+    {"number": "04", "title": "容器与部署", "tools": ["Docker", "Compose", "Nginx", "Tomcat"], "description": "构建镜像，编排多服务应用，配置反向代理与运行环境。", "icon": "container"},
+    {"number": "05", "title": "数据与云服务", "tools": ["MySQL", "Redis", "MinIO", "OSS / S3"], "description": "数据库操作与备份；有阿里云、AWS 和 Cloudflare 配置实践。", "icon": "database"},
+    {"number": "01", "title": "应用开发", "tools": ["Java", "Maven", "SQL", "Git"], "description": "通过手写 Java 项目积累业务开发实践，能结合配置与日志排查运行问题。", "icon": "code"},
+    {"number": "02", "title": "Web 开发", "tools": ["TypeScript", "React", "Next.js", "Prisma"], "description": "PawLink 项目涵盖用户界面、服务端功能与数据访问结构。", "icon": "code"},
+    {"number": "06", "title": "模组实践", "tools": ["Lua", "C++", "ASI", "Git"], "description": "在模组工作区中组织脚本、原生插件方向及分析验证资料。", "icon": "gamepad-2"}
   ],
   "about": {
     "eyebrow": "$ whoami --about",
@@ -164,7 +164,7 @@
       "title": "技术探索",
       "terminalName": "technology",
       "englishDescription": "Technical principles, scripting and software behavior. Learning how features work by investigating practical problems.",
-      "tools": "技术原理 · 脚本实践 · 软件行为",
+      "tools": ["技术原理", "脚本实践", "软件行为"],
       "description": "喜欢弄清一个功能背后的工作原理，不只停留在“能用”。关注脚本、服务运行和软件行为，把遇到的问题当作进一步理解技术的入口。",
       "icon": "terminal"
     },
@@ -173,7 +173,7 @@
       "title": "开源工具",
       "terminalName": "open-source",
       "englishDescription": "Development tools, automation and clear documentation. Exploring open-source tools that improve everyday workflows.",
-      "tools": "开发工具 · 自动化 · 文档配置",
+      "tools": ["开发工具", "自动化", "文档配置"],
       "description": "关注开源工具如何解决日常工作流中的具体问题，例如文件整理、开发辅助与任务自动化。也在意配置是否清楚、文档是否易读，以及工具能否长期维护。",
       "icon": "code"
     },
@@ -182,7 +182,7 @@
       "title": "游戏与模组",
       "terminalName": "game-modding",
       "englishDescription": "Games, Lua scripts, C++ native plugins and mod loading. Organizing code, analysis and references for the Kingdom Come: Deliverance II workspace.",
-      "tools": "Lua · C++ · 模组工作区",
+      "tools": ["Lua", "C++", "模组工作区"],
       "description": "喜欢游戏里的世界与玩法，也对模组如何改变体验感兴趣。关注 Lua 脚本、原生插件和装载流程，在《天国：拯救 2》模组工作区里整理代码、分析记录与参考资料。",
       "icon": "gamepad-2"
     }

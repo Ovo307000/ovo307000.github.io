@@ -21,7 +21,6 @@ a.project-title:hover { color: var(--accent); }
 .practice-group ul { display: flex; flex-direction: column; gap: 12px; }
 .practice-group li { display: flex; align-items: flex-start; gap: 12px; }
 .practice-group li img { flex-shrink: 0; }
-.project-technologies { display: grid; grid-template-columns: repeat(3, max-content); gap: 8px; }
 .project-desktop-trigger { position: absolute; inset: 0; z-index: 1; border: 0; background: transparent; border-radius: 4px; }
 .project-desktop-trigger:hover { background: #bef48205; }
 .project-card--home .project-mobile-trigger, .project-teaser, .projects-mobile-intro { display: none; }
@@ -45,8 +44,4 @@ a.project-title:hover { color: var(--accent); }
   .project-card--detail { gap: 16px !important; }
   .project-card--detail .project-cover { margin-bottom: 8px; }
   .project-card--detail h3 { font-size: 24px; line-height: 36px; }
-  .project-technologies { grid-template-columns: repeat(3, max-content); max-width: 100%; }
-}
-@media (max-width: 359px) {
-  .project-technologies { display: flex; flex-wrap: wrap; }
 }

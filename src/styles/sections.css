@@ -32,7 +32,6 @@
 .directory-item { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 .directory-item-heading { display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
 .directory-item-heading .mono { color: var(--muted); font-size: 12px; line-height: 20px; letter-spacing: .5px; }
-.directory-tools { color: var(--accent); font-size: 12px; line-height: 20px; }
 .directory-description { color: var(--secondary); font-size: 14px; line-height: 24px; }
 .education-section { gap: 32px; }
 .education-section .section-heading { gap: 32px; }
@@ -109,7 +108,7 @@
   .interest-item { display: grid; grid-template-columns: 24px 1fr; column-gap: 16px; row-gap: 8px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
   .interest-item .directory-item-heading { grid-column: 1; grid-row: 1 / 4; padding: 0; border: 0; align-items: flex-start; }
   .interest-item .directory-item-heading .mono { display: none; }
-  .interest-item h3, .interest-item > p { grid-column: 2; }
+  .interest-item h3, .interest-item > p, .interest-item > .tags { grid-column: 2; }
   .contact-section, .contact-section .section-heading { gap: 16px; }
   .contact-section .section-description, .contact-texture { display: none; }
   .contact-actions { display: flex; flex-direction: column; }
