@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SiteBackground } from './SiteBackground';
+import { SectionReveal } from './SectionReveal';
 import { content, projects } from '../lib/content';
 import { HeroSection } from './HeroSection';
 import { AboutSection } from './AboutSection';
@@ -27,11 +28,15 @@ export function Portfolio() {
       <a className="skip-link" href="#main">跳到主要内容</a>
       <SiteBackground />
       <main id="main">
-        <HeroSection onResume={onResume} /><AboutSection />
-        <ProjectsSection onProject={setTarget} /><SkillsSection /><EducationTimeline /><InterestsSection />
-        <ContactSection onResume={onResume} />
+        <SectionReveal><HeroSection onResume={onResume} /></SectionReveal>
+        <SectionReveal><AboutSection /></SectionReveal>
+        <SectionReveal><ProjectsSection onProject={setTarget} /></SectionReveal>
+        <SectionReveal><SkillsSection /></SectionReveal>
+        <SectionReveal><EducationTimeline /></SectionReveal>
+        <SectionReveal><InterestsSection /></SectionReveal>
+        <SectionReveal><ContactSection onResume={onResume} /></SectionReveal>
       </main>
-      <Footer />
+      <SectionReveal><Footer /></SectionReveal>
       <TerminalDialog title={title} open={target !== null} onClose={privacy.closeDialog} onCloseStart={privacy.cancelUnlock}
         className={target === 'unlock' ? 'access-dialog' : undefined}>
         {target === 'unlock' && <ShareCodeTerminal />}
