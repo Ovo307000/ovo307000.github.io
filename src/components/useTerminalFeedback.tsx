@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import type { createTerminalShell } from '../lib/terminalShell';
+import { configureTerminalHint, markTerminalUsed } from '../lib/terminalUsage';
 import { TerminalCaret } from './TerminalCaret';
 
 type TerminalShell = ReturnType<typeof createTerminalShell>;
@@ -20,7 +21,7 @@ function readPreview(input: HTMLInputElement, shell: TerminalShell, composing: b
 function observeInput(input: HTMLInputElement, shell: TerminalShell, update: (preview: Preview) => void, reset: () => void) {
   let composing = false;
   function refresh() { update(readPreview(input, shell, composing)); }
-  function edit() { reset(); refresh(); }
+  function edit() { markTerminalUsed(input); reset(); refresh(); }
   function startComposition() { composing = true; refresh(); }
   function endComposition() { composing = false; edit(); }
   function keyUp(event: Event) {
@@ -44,6 +45,7 @@ export function useTerminalFeedback(root: RefObject<HTMLDivElement | null>, shel
   useEffect(() => {
     const target = root.current?.querySelector('input');
     if (!target) { return; }
+    configureTerminalHint(target);
     setInput(target);
     return observeInput(target, shell, setPreview, () => setNoMatch(false));
   }, [root, shell]);

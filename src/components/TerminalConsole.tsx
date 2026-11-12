@@ -59,7 +59,6 @@ function useConsoleInput(onResume: () => void) {
   useEffect(() => {
     const input = root.current?.querySelector('input');
     input?.setAttribute('aria-label', 'Terminal command');
-    input?.setAttribute('placeholder', 'type help');
     input?.setAttribute('autocapitalize', 'off');
     input?.setAttribute('autocorrect', 'off');
     input?.setAttribute('enterkeyhint', 'send');
