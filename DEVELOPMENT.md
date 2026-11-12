@@ -1,5 +1,14 @@
 # 前端开发交接
 
+## 终端命令定义与参数补全（2026-11-13）
+
+命令表是执行、help和补全的唯一参数来源。每项声明description、options、parameters和可选examples；位置参数可指定choices或动态path/directory类型。terminalCommand.ts生成usage、help并验证参数，terminalCompletion.ts不再判断具体命令名。实时后缀和Tab仍经shell.complete共用此逻辑，原输入、光标、历史、中文组词与分享码窗口不变。
+
+`npm run test:terminal` 用现有TypeScript编译器和Node内置测试，在系统临时目录编译并清理；无新增依赖。覆盖全部命令、新登记项自动传播、参数与选项位置、动态目录、错误输入不触发副作用。命令业务回调仍负责具体工作；新增参数时在命令项声明契约并实现相应业务，不从usage文本或函数源码猜参数。
+
+本目录已实现 Figma 个人主页，入口为 `src/pages/index.astro`，通过 `Portfolio` 激活 React 交互。内容来自同一份 `content.json`，桌面与手机通过响应式布局共享组件；项目详情和简历预览共用 `TerminalWindow`。
+
+
 本目录已实现 Figma 个人主页，入口为 `src/pages/index.astro`，通过 `Portfolio` 激活 React 交互。内容来自同一份 `content.json`，桌面与手机通过响应式布局共享组件；项目详情和简历预览共用 `TerminalWindow`。
 
 ## 背景开场与卡片反馈（2026-11-13，当前状态）

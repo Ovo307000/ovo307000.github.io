@@ -18,6 +18,8 @@
 
 可编辑设计及状态表在私有维护工作区保存，公开仓库不提供可能包含私人资料的设计链接。首页终端只负责分享码输入与提示，资料回到原区块显示。
 
+命令、选项和位置参数在 `src/lib/terminalShell.ts` 的命令表登记，`terminalCommand.ts` 统一生成帮助并校验输入，`terminalCompletion.ts` 根据同一份定义生成实时提示与 Tab 候选。路径候选随当前虚拟目录变化；新增命令或参数不再单独修改补全判断。运行 `npm run test:terminal` 检查登记传播和现有命令行为。
+
 ## 隐私区块与分享码
 
 页面只维护一份完整资料，不另做删减版 PDF。完整 PDF、预览、邮箱及教育明细和校徽一并使用 [StatiCrypt](https://github.com/robinmoisson/staticrypt) 加密为 `resume-private.enc`。未解锁时，原区块显示 [React Bits DecryptedText](https://reactbits.dev/text-animations/decrypted-text) 驱动的乱码提示；动画只接收公开占位文字，页面不通过 CSS 隐藏真实内容。公开构建不需要私有源文件或分享码。
