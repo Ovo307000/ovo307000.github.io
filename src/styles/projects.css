@@ -22,7 +22,6 @@ a.project-title:hover { color: var(--accent); }
 .practice-group li { display: flex; align-items: flex-start; gap: 12px; }
 .practice-group li img { flex-shrink: 0; }
 .project-desktop-trigger { position: absolute; inset: 0; z-index: 1; border: 0; background: transparent; border-radius: 4px; }
-.project-desktop-trigger:hover { background: #bef48205; }
 .project-card--home .project-mobile-trigger, .project-teaser, .projects-mobile-intro { display: none; }
 .project-card--detail .project-title { order: -1; }
 .project-card--detail .project-content { display: flex; }

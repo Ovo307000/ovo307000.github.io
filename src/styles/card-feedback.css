@@ -1,0 +1,20 @@
+.project-card--home, .protected-placeholder {
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+.project-card--home .project-title {
+  border-color: var(--card-border, var(--border));
+  transition: border-color 200ms ease;
+}
+.project-card--home:has(:focus-visible), .project-card--home:active,
+.protected-placeholder:focus-visible, .protected-placeholder:active {
+  --card-border: var(--accent);
+  background-color: var(--elevated);
+  border-color: var(--accent);
+}
+@media (hover: hover) {
+  .project-card--home:hover, .protected-placeholder:hover {
+    --card-border: var(--accent);
+    background-color: var(--elevated);
+    border-color: var(--accent);
+  }
+}

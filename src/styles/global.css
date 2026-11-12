@@ -5,6 +5,7 @@
 @import './terminal.css';
 @import './sections.css';
 @import './projects.css';
+@import './card-feedback.css';
 @import './titles.css';
 
 :root {
