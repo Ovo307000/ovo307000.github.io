@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { assets } from '../lib/assets';
 import { content, projects } from '../lib/content';
-import { Navigation } from './Navigation';
 import { HeroSection } from './HeroSection';
 import { AboutSection } from './AboutSection';
 import { ProjectsSection } from './projects/ProjectsSection';
@@ -27,7 +26,6 @@ export function Portfolio() {
     <PrivacyAccessProvider value={privacy}><div className="portfolio" id="top">
       <a className="skip-link" href="#main">跳到主要内容</a>
       <img className="page-texture" src={assets.pageScanlines} alt="" aria-hidden="true" />
-      <Navigation />
       <main id="main">
         <HeroSection onResume={onResume} /><AboutSection />
         <ProjectsSection onProject={setTarget} /><SkillsSection /><EducationTimeline /><InterestsSection />

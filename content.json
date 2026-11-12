@@ -10,10 +10,8 @@
     "footer": "开发 · 部署 · 运维",
     "copyright": "个人作品集 / 2026"
   },
-  "navigation": ["[01] 关于我", "[02] 项目实践", "[03] 技术能力", "[04] 个人兴趣"],
   "retro": {
     "edition": "PERSONAL TERMINAL / V.01",
-    "prompt": "PORTFOLIO://LOCAL",
     "heroCommand": "$ open ./portfolio",
     "footerPrompt": "END OF FILE / 保持好奇，继续探索。"
   },
