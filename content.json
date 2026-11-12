@@ -1,17 +1,14 @@
 {
   "locale": "zh-CN",
   "identity": {
-    "githubUrl": "https://github.com/Ovo307000",
-    "resumeUrl": null
+    "githubUrl": "https://github.com/Ovo307000"
   },
   "site": {
     "brand": "ops.portfolio",
-    "signature": "DEVELOPMENT / DEPLOYMENT / OPERATIONS",
     "footer": "开发 · 部署 · 运维",
     "copyright": "个人作品集 / 2026"
   },
   "retro": {
-    "edition": "PERSONAL TERMINAL / V.01",
     "heroCommand": "$ open ./portfolio",
     "footerPrompt": "END OF FILE / 保持好奇，继续探索。"
   },
@@ -21,8 +18,7 @@
     "accent": "到部署与运维。",
     "summary": "计算机科学与技术专业本科，有 Java、TypeScript 项目开发与 Linux 应用部署实践。项目涉及业务平台、Web 应用与模组开发工作区，也关注 Docker 部署、日志排查和脚本辅助。",
     "primaryAction": "查看项目实践",
-    "secondaryAction": "在线预览简历",
-    "scrollHint": "向下了解我的实践"
+    "secondaryAction": "在线预览简历"
   },
   "terminal": {
     "title": "profile.yaml",
@@ -41,9 +37,7 @@
     "eyebrow": "$ ls ./projects/",
     "title": "项目实践",
     "description": "从 Java 业务系统到 TypeScript Web 应用，以及游戏模组开发工作区。",
-    "developmentLabel": "开发实践",
-    "operationsLabel": "部署与维护",
-    "repositoryLabel": "项目仓库 · 待提供"
+    "developmentLabel": "开发实践"
   },
   "projects": [
     {
@@ -189,17 +183,12 @@
   "resumePreview": {
     "title": "resume.pdf",
     "privacyHint": "Page 1 / 1",
-    "filePath": "website/resume.pdf",
-    "zoomLabel": "Zoom in",
-    "fitLabel": "Fit width",
-    "downloadLabel": "Download PDF",
-    "downloadStatus": "ready"
+    "downloadLabel": "Download PDF"
   },
   "mobile": {
     "projectsIntro": "点开项目，查看开发内容与工程实践。",
     "detailAction": "查看项目详情",
-    "resumeAction": "查看 PDF 简历",
-    "educationEyebrow": "EDUCATION"
+    "resumeAction": "查看 PDF 简历"
   },
   "educationSection": {
     "eyebrow": "$ cat ./education.log",
