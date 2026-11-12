@@ -30,6 +30,7 @@ function useDialogEntry(open: boolean, dialog: DialogReference, animate: WindowA
     closing.current = false;
     element.removeAttribute('data-closing');
     element.showModal();
+    element.querySelector<HTMLInputElement>('input[autofocus]')?.focus({ preventScroll: true });
     const from = reduced ? { x: 0, y: 0, scaleX: 1, scaleY: 1 } : launchFrame(element, source.current);
     const entry = animate(element, {
       opacity: [reduced ? 1 : 0, 1], x: [from.x, 0], y: [from.y, 0],
@@ -65,17 +66,35 @@ function useMaximizedWindow(dialog: DialogReference, animate: WindowAnimate,
   return { maximized, toggleMaximized, reset: () => setMaximized(false) };
 }
 
-export function useTerminalDialog(open: boolean, onClose: () => void) {
+function useDialogVisibility(open: boolean, dialog: DialogReference,
+    closing: RefObject<boolean>, reset: () => void) {
+  useEffect(() => {
+    const element = dialog.current;
+    if (open || !element?.open) { return; }
+    finishMotion(element);
+    element.close();
+    closing.current = false;
+    reset();
+  }, [open, dialog]);
+  useEffect(() => {
+    const element = dialog.current;
+    return () => { element?.close(); };
+  }, [dialog]);
+}
+
+export function useTerminalDialog(open: boolean, onClose: () => void, onCloseStart?: () => void) {
   const [dialog, animate] = useAnimate<HTMLDialogElement>();
   const closing = useRef(false);
   const source = useRef<DOMRect | null>(null);
   const reduced = useReducedMotion();
   const size = useMaximizedWindow(dialog, animate, reduced, closing);
   useDialogEntry(open, dialog, animate, reduced, source, closing);
+  useDialogVisibility(open, dialog, closing, size.reset);
   async function close() {
     const element = dialog.current;
     if (!element?.open || closing.current) { return; }
     closing.current = true;
+    onCloseStart?.();
     finishMotion(element);
     element.setAttribute('data-closing', 'true');
     const target = reduced ? { x: 0, y: 0, scaleX: 1, scaleY: 1 } : launchFrame(element, source.current);
