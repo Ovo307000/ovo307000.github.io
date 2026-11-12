@@ -5,6 +5,7 @@
 @import './terminal.css';
 @import './sections.css';
 @import './projects.css';
+@import './titles.css';
 
 :root {
   --background: #050a06;

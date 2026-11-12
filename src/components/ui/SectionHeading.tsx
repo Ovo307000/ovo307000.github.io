@@ -1,3 +1,5 @@
+import { AsciiSectionTitle } from '../AsciiSectionTitle';
+
 interface SectionHeadingProps {
   eyebrow: string;
   title: string;
@@ -8,7 +10,7 @@ export function SectionHeading({ eyebrow, title, description }: SectionHeadingPr
   return (
     <header className="section-heading">
       <p className="command">{eyebrow}</p>
-      <h2>{title}</h2>
+      <AsciiSectionTitle text={title} />
       {description && <p className="section-description">{description}</p>}
     </header>
   );

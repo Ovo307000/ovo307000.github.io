@@ -2,6 +2,7 @@ import { content } from '../lib/content';
 import { Button } from './ui/button';
 import { Icon } from './ui/Icon';
 import { ProfileTerminal } from './ProfileTerminal';
+import { HeroTitle } from './HeroTitle';
 
 export function HeroSection({ onResume }: { onResume: () => void }) {
   return (
@@ -10,7 +11,7 @@ export function HeroSection({ onResume }: { onResume: () => void }) {
       <div className="hero-composition">
         <div className="hero-copy">
           <p className="hero-eyebrow">{content.hero.eyebrow}</p>
-          <h1 id="hero-title">{content.hero.title}<span>{content.hero.accent}</span></h1>
+          <HeroTitle />
           <p className="hero-summary">{content.hero.summary}</p>
           <div className="hero-actions">
             <Button asChild><a href="#projects"><Icon name="code" />{content.hero.primaryAction}</a></Button>
