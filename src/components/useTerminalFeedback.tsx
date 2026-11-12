@@ -2,16 +2,19 @@ import { useEffect, useState } from 'react';
 import type { RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import type { createTerminalShell } from '../lib/terminalShell';
+import { TerminalCaret } from './TerminalCaret';
 
 type TerminalShell = ReturnType<typeof createTerminalShell>;
-interface Preview { value: string; suffix: string; scrollLeft: number }
+interface Preview { value: string; suffix: string; scrollLeft: number; caretPrefix: string | null }
 
 function readPreview(input: HTMLInputElement, shell: TerminalShell, composing: boolean): Preview {
   const value = input.value;
   const atEnd = input.selectionStart === value.length && input.selectionEnd === value.length;
-  const active = document.activeElement === input && atEnd && !composing && value.length > 0;
+  const focused = document.activeElement === input;
+  const active = focused && !composing && atEnd && value.length > 0;
   const completion = active ? shell.complete(value).value : value;
-  return { value, suffix: completion.startsWith(value) ? completion.slice(value.length) : '', scrollLeft: input.scrollLeft };
+  const caretPrefix = focused && (composing || input.selectionStart === input.selectionEnd) ? value.slice(0, input.selectionEnd ?? 0) : null;
+  return { value, suffix: completion.startsWith(value) ? completion.slice(value.length) : '', scrollLeft: input.scrollLeft, caretPrefix };
 }
 
 function observeInput(input: HTMLInputElement, shell: TerminalShell, update: (preview: Preview) => void, reset: () => void) {
@@ -25,9 +28,9 @@ function observeInput(input: HTMLInputElement, shell: TerminalShell, update: (pr
     refresh();
   }
   const listeners: [string, EventListener][] = [
-    ['input', edit], ['select', refresh], ['keyup', keyUp], ['click', refresh],
+    ['input', edit], ['select', refresh], ['selectionchange', refresh], ['keyup', keyUp], ['click', refresh],
     ['scroll', refresh], ['focus', refresh], ['blur', edit],
-    ['compositionstart', startComposition], ['compositionend', endComposition],
+    ['compositionstart', startComposition], ['compositionupdate', refresh], ['compositionend', endComposition],
   ];
   for (const [name, listener] of listeners) { input.addEventListener(name, listener); }
   refresh();
@@ -36,7 +39,7 @@ function observeInput(input: HTMLInputElement, shell: TerminalShell, update: (pr
 
 export function useTerminalFeedback(root: RefObject<HTMLDivElement | null>, shell: TerminalShell) {
   const [input, setInput] = useState<HTMLInputElement | null>(null);
-  const [preview, setPreview] = useState<Preview>({ value: '', suffix: '', scrollLeft: 0 });
+  const [preview, setPreview] = useState<Preview>({ value: '', suffix: '', scrollLeft: 0, caretPrefix: null });
   const [noMatch, setNoMatch] = useState(false);
   useEffect(() => {
     const target = root.current?.querySelector('input');
@@ -51,6 +54,7 @@ export function useTerminalFeedback(root: RefObject<HTMLDivElement | null>, shel
           <span className="terminal-ghost-prefix">{preview.value}</span>{preview.suffix}
         </span>
       </span>
+      <TerminalCaret input={input} prefix={preview.caretPrefix} scrollLeft={preview.scrollLeft} />
       {noMatch && <span className="terminal-completion-status" role="status">No matching commands or paths</span>}
     </>, input.parentElement,
   ) : null;
