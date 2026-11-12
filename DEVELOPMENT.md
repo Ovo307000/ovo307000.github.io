@@ -1,5 +1,13 @@
 # 前端开发交接
 
+## 架构与失效内容整理（2026-11-13）
+
+隐私公共接口在 `PrivacyAccess.tsx` 显式定义，只暴露资料、状态和业务操作。首页、联系区和终端统一调用 `openResume`；弹窗目标使用区分项目、分享码和简历的类型。`PrivateResumeSession` 唯一管理异步请求、取消和资源所有权，React Hook 只连接生命周期；错误使用稳定类型，不以提示文案作条件。
+
+`resumeContract.ts` 是本机生成器和浏览器共同使用的格式及基础资料校验源。生成端保留文件签名检查，浏览器保留解密和 Blob URL 创建/释放；无需新依赖。`npm run test:privacy` 用 Node 内置测试验证取消、旧请求、卸载、错误重试及合成资料经现有生成器的往返，测试不会读取正式分享码或更新正式密文。CI 同时执行终端和隐私测试。
+
+教育样式集中在 `sections.css`，分享码与受保护卡片样式归 `privacy.css`，`pdf.css` 只管查看器。缩放限制和步长由 `usePdfZoom` 提供，工具栏仅消费操作与可用状态。已移除11个无消费者数据字段及3份旧SVG，Figma现有设计和网站公开内容保持。运行验证及Figma连线证据见私有工作区执行计划 `docs/exec-plans/completed/website-architecture-cleanup.md`；本轮不发布。
+
 ## 终端命令定义与参数补全（2026-11-13）
 
 命令表是执行、help和补全的唯一参数来源。每项声明description、options、parameters和可选examples；位置参数可指定choices或动态path/directory类型。terminalCommand.ts生成usage、help并验证参数，terminalCompletion.ts不再判断具体命令名。实时后缀和Tab仍经shell.complete共用此逻辑，原输入、光标、历史、中文组词与分享码窗口不变。
