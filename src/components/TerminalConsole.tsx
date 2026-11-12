@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 import { TerminalEmulator } from './TerminalEmulator';
 import type { ConsoleHandle } from './TerminalEmulator';
@@ -7,7 +7,6 @@ import { colorTerminalEntry, terminalColors } from '../lib/terminalColors';
 import { TerminalCode } from './TerminalCode';
 import { TerminalAnsi } from './TerminalAnsi';
 import { useTerminalFeedback } from './useTerminalFeedback';
-import { useTerminalAccess } from './useTerminalAccess';
 import { usePrivacyAccess } from './PrivacyAccess';
 
 interface TerminalConsoleProps { intro: ReactNode; onResume: () => void }
@@ -47,7 +46,7 @@ function handleConsoleKey(event: KeyboardEvent<HTMLDivElement>, terminal: Consol
   return completeInput(terminal, shell, event.target);
 }
 
-function useConsoleInput(onResume: () => void, secret: boolean) {
+function useConsoleInput(onResume: () => void) {
   const root = useRef<HTMLDivElement>(null);
   const consoleRef = useRef<ConsoleHandle>(null);
   const resume = useRef(onResume);
@@ -60,7 +59,7 @@ function useConsoleInput(onResume: () => void, secret: boolean) {
     () => consoleRef.current?.clearStdout(), {
       unlock: () => privacyRef.current.requestUnlock(), lock: () => privacyRef.current.access.lock(),
     }));
-  const feedback = useTerminalFeedback(root, shell, secret);
+  const feedback = useTerminalFeedback(root, shell);
   function complete(event: KeyboardEvent<HTMLDivElement>) {
     if (event.nativeEvent.isComposing) { event.stopPropagation(); return; }
     const noMatch = handleConsoleKey(event, consoleRef.current, shell, directory);
@@ -71,13 +70,11 @@ function useConsoleInput(onResume: () => void, secret: boolean) {
 }
 
 export function TerminalConsole({ intro, onResume }: TerminalConsoleProps) {
-  const secret = usePrivacyAccess().access.state.phase === 'unlock';
-  const { root, consoleRef, directory, complete, feedback } = useConsoleInput(onResume, secret);
-  const access = useTerminalAccess(root, consoleRef);
+  const { root, consoleRef, directory, complete, feedback } = useConsoleInput(onResume);
+  useLayoutEffect(() => { root.current?.querySelector('input')?.setAttribute('aria-label', 'Terminal command'); }, [root]);
   return (
-    <div ref={root} className="terminal-console" lang="en" onKeyDownCapture={(event) => { if (!access.handleKey(event)) { complete(event); } }}>
-      <TerminalEmulator terminalRef={consoleRef} intro={intro} secret={secret} disabled={access.busy}
-        prompt={secret ? 'share-code $' : directory === '~' ? '$' : `${directory} $`} />
+    <div ref={root} className="terminal-console" lang="en" onKeyDownCapture={complete}>
+      <TerminalEmulator terminalRef={consoleRef} intro={intro} prompt={directory === '~' ? '$' : `${directory} $`} />
       {feedback}
     </div>
   );

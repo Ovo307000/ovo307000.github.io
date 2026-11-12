@@ -27,5 +27,8 @@
 .education-track span { width: 10px; height: 10px; border: 1px solid var(--accent); border-radius: 50%; }
 .education-stop:first-child .education-track::after { content: ''; height: 1px; background: var(--accent); flex: 1; }
 .school-logo { width: 52px; height: 52px; flex-shrink: 0; object-fit: contain; }
+.portfolio-dialog.access-dialog:not([data-maximized='true']) .terminal-window { height: auto; min-height: 268px; max-height: calc(100dvh - 48px); }
+.share-code-terminal .terminal-input-row { animation: none; }
+.share-code-terminal .terminal-emulator { height: auto; }
 @media (max-width: 767px) { .pdf-viewer { padding: 24px 16px; } }
 @media (max-width: 767px) { .privacy-blocks, .education-timeline { grid-template-columns: 1fr; } .school-logo { width: 48px; height: 48px; } }

@@ -13,6 +13,7 @@ import { ContactSection } from './ContactSection';
 import { Footer } from './Footer';
 import { TerminalDialog } from './ui/TerminalDialog';
 import { ResumeViewer } from './ResumeViewer';
+import { ShareCodeTerminal } from './ShareCodeTerminal';
 import { usePortfolioPrivacy } from './usePortfolioPrivacy';
 import { PrivacyAccessProvider } from './PrivacyAccess';
 
@@ -21,7 +22,7 @@ export function Portfolio() {
   const project = projects.find(item => item.id === target);
   const privacy = usePortfolioPrivacy(setTarget);
   const { onResume } = privacy;
-  const title = project ? `${project.id}.md` : content.resumePreview.title;
+  const title = target === 'unlock' ? 'share-code.sh' : project ? `${project.id}.md` : content.resumePreview.title;
   return (
     <PrivacyAccessProvider value={privacy}><div className="portfolio" id="top">
       <a className="skip-link" href="#main">跳到主要内容</a>
@@ -33,7 +34,9 @@ export function Portfolio() {
         <ContactSection onResume={onResume} />
       </main>
       <Footer />
-      <TerminalDialog title={title} open={target !== null} onClose={() => setTarget(null)}>
+      <TerminalDialog title={title} open={target !== null} onClose={privacy.closeDialog} onCloseStart={privacy.cancelUnlock}
+        className={target === 'unlock' ? 'access-dialog' : undefined}>
+        {target === 'unlock' && <ShareCodeTerminal />}
         {project && <ProjectCard project={project} detail />}
         {target === 'resume' && privacy.access.state.urls && <ResumeViewer urls={privacy.access.state.urls} />}
       </TerminalDialog>

@@ -12,18 +12,15 @@ function requestUnlock(section: string, returnTarget: RefObject<string>, setTarg
     return;
   }
   returnTarget.current = section;
-  setTarget(null);
+  setTarget('unlock');
   access.showUnlock();
-  window.setTimeout(() => {
-    document.querySelector('.profile-terminal')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    document.querySelector<HTMLInputElement>('.profile-terminal input')?.focus({ preventScroll: true });
-  }, 0);
 }
 
 async function finishUnlock(code: string, returnTarget: RefObject<string>, setTarget: SetTarget, access: Access): Promise<void> {
   if (!await access.unlock(code)) { return; }
   if (returnTarget.current === 'resume') { setTarget('resume'); }
   else {
+    setTarget(null);
     requestAnimationFrame(() => document.getElementById(returnTarget.current)?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
   }
 }
@@ -32,6 +29,8 @@ export function usePortfolioPrivacy(setTarget: SetTarget) {
   const access = usePrivateResume();
   const returnTarget = useRef('contact');
   return { access,
+    cancelUnlock: () => { if (access.state.phase === 'unlock') { access.lock(); } },
+    closeDialog: () => { if (access.state.phase === 'unlock') { access.lock(); } setTarget(null); },
     requestUnlock: (section = 'contact') => requestUnlock(section, returnTarget, setTarget, access),
     finishUnlock: (code: string) => finishUnlock(code, returnTarget, setTarget, access),
     onResume: () => access.state.urls ? setTarget('resume') : requestUnlock('resume', returnTarget, setTarget, access),
