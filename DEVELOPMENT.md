@@ -10,11 +10,11 @@
 
 Figma 标签源为 `206:3326`（Technology / Tag）；技能/桌面兴趣源 `3:299`、手机兴趣源 `111:2446`、完整项目源 `3:223` 均通过插槽组合它的实例。直接维护的消费者分别为 15、3、20 个，页面原型继承正式页面源。正式关于我根 `3:602` / `21:1460` 保留，已有滚动目标无需更换。Figma 实测标签高 30px；浏览器当前缩放下计算高约 29.6px、边框约 0.8px，各处值一致。
 
-本地生产构建浏览器验证：1440px 两栏标签和底边对齐；390px、320px 纵排及标签换行正常，页面横向溢出为 0。技能六组各四个标签、兴趣三组各三个标签、关于我两组 3/2 个标签均保留；桌面可见 62 个标签，手机首页可见 38 个（项目完整标签在详情中）。320px 实际打开苍穹外卖详情，六个标签完整且 Docker Compose 不溢出。实际运行 `cat ./skills.conf` 返回六组原技能清单，浏览器错误/警告为空。构建与检查状态及提交/发布决定在 `../docs/exec-plans/active/about-section-style-a.md`；本地验证不能代表正式站点已发布。
+本地生产构建浏览器验证：1440px 两栏标签和底边对齐；390px、320px 纵排及标签换行正常，页面横向溢出为 0。技能六组各四个标签、兴趣三组各三个标签、关于我两组 3/2 个标签均保留；桌面可见 62 个标签，手机首页可见 38 个（项目完整标签在详情中）。320px 实际打开苍穹外卖详情，六个标签完整且 Docker Compose 不溢出。实际运行 `cat ./skills.conf` 返回六组原技能清单，浏览器错误/警告为空。构建、检查及发布证据由私有工作区的本次执行计划记录；本地验证不能代表正式站点已发布。
 
 本轮另发现手机菜单收起会让锚点向上偏移约 204px；实际关于我 top≈-180.4px，桌面约 23.6px。Navigation.tsx 无本任务改动，保留为独立问题；没有将菜单点击成功写成手机锚点定位通过。
 
-截图与结构证据位于 `verification/tags-interests-desktop.jpg`、`tags-interests-390.jpg`、`tags-interests-320.jpg`、`tags-full-desktop.jpg`、`tags-full-390.jpg`、`tags-full-320.jpg`、`tags-project-320.jpg`、`tags-layout-checks.json` 和 `tags-interaction-checks.json`。设计经验：项目组件属性对象的键顺序不保证等于技术标签下标，迁移后应按原内容变量路径的数字下标排列；本轮已按此恢复全部项目消费者的顺序。复制混合单边描边时，`strokeWeight` 可能是 mixed 标记，不能当数字写入；应明确维护单边线宽。
+截图与结构证据位于 `verification/tags-interests-desktop.jpg`、`tags-interests-390.jpg`、`tags-interests-320.jpg`、`tags-full-desktop.jpg`、`tags-full-390.jpg`、`tags-full-320.jpg`、`tags-project-320-bottom.jpg`、`tags-layout-checks.json` 和 `tags-interaction-checks.json`。设计经验：项目组件属性对象的键顺序不保证等于技术标签下标，迁移后应按原内容变量路径的数字下标排列；本轮已按此恢复全部项目消费者的顺序。复制混合单边描边时，`strokeWeight` 可能是 mixed 标记，不能当数字写入；应明确维护单边线宽。
 
 ## 终端实时补全与无匹配反馈（2026-11-12）
 
