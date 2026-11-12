@@ -2,6 +2,57 @@
 
 本目录已实现 Figma 个人主页，入口为 `src/pages/index.astro`，通过 `Portfolio` 激活 React 交互。内容来自同一份 `content.json`，桌面与手机通过响应式布局共享组件；项目详情和简历预览共用 `TerminalWindow`。
 
+## 背景开场与卡片反馈（2026-11-13，当前状态）
+
+提交前检查已由显式请求gpt-6.1-terra的独立代理01a1d097-424a-7a81-a270-77f8fe3bc9d8完成并放行：类型检查72文件零诊断、构建通过，源码/来源适配/当前截图核对通过；指定源码和文档中的常见凭据格式扫描无命中，不代表完整敏感信息审计。没有独立重测全部浏览器互动，结论结合主会话现有运行证据；手机加密卡片瞬时active和真机仍属已知验证限制。拟按导航、背景、入场、标题、卡片五项分开本地提交，开发记录独立提交；另一会话README编辑不纳入，不推送或发布。
+
+桌面和手机侧边导航均已移除，Navigation、LineSidebar、导航定位函数、专属CSS和无引用navigation数据全部删除。下文2026-11-12导航实施记录属于历史验证，不能作为当前页面行为。SectionReveal和GSAP仍用于八处入场，不随导航一起删除；终端和现有页面内链接保留。
+
+GradientASCII新增introDuration秒参数，默认仍为上游2.4秒；SiteBackground开启intro并传3.2，日常speed0.35不变。重读官方注册表确认时长原本固定于INTRO_SECONDS，不能通过降低speed改变开场。浏览器采样uIntro由0.0052渐增到1，实测3324.5ms；设备帧耗时与上游dt限幅会使实际时间略长。减少动画首次值直接为1。
+
+项目与加密卡片共用styles/card-feedback.css，背景色/边框色200ms ease；悬停仅在支持hover的设备启用，键盘可见焦点及active状态同源，无transform。项目标题分隔线继承根的反馈色，不改覆盖点击层、仓库链接或手机详情按钮。四项目及三加密入口逐项键盘反馈通过，七处根transform均none；四项目详情和三分享码窗口点击/Escape关闭通过。手机轻点项目采样到active及多帧回退中间色；加密入口实际点按可打开窗口，但瞬时active颜色未在逐帧采样中捕获，不能称为该项连续颜色已验证。无真机检查。
+
+Figma先移除导航源254:3659及两包装，四页/原型继承一致；说明254:3695和背景源244:3663更新。反馈板300:3691使用既有移动项目源102:1621及加密源232:3649的实例，颜色绑定既有变量，无整页栅格替代。默认/反馈截图及两端整页已看。浏览器证据verification/card-feedback-*.png与card-feedback-checks.json。72文件类型检查0错误/警告/提示，构建通过，保留既有staticrypt node:crypto外置警告。1440桌面与390/320手机无侧栏、手机溢出0；无JS/无WebGL及减少动画回退可读。未验证分享码正确解锁或真机，不部署。
+
+## 主标题 TechText、六区块 ASCIIText（2026-11-12）
+
+2026-11-13跨行选框修正：此前HeroTitle每行各建TechText画布，frame状态互不相通，同一行平滑并不代表跨行连续。先更新Figma动效说明293:3691，桌面/手机原可编辑标题布局保留；再将HeroTitle合为一个画布。TechText仅补换行排版、字形独立基线、像素行高和二维命中，复用官方选框缓动及点击/拖动逻辑，不增加第二套选框动画。useTitleTheme返回现有CSS行高；画布纵向留白改为两行总高的10%，保留原176/108/92px标题高度。
+
+实测1440/900/768/390/320px均只有一个主标题画布、横向溢出0；下行返回上行采样分别有37/31/30/32/29个不同选框纵坐标，验证经过中间位置而非跳转。下行点击、上行拖动后恢复同一画布哈希1659861024，拖动光标grabbing；无JS及减少动画均保留完整两行普通文字。75文件类型检查0诊断，构建通过，仅原有staticrypt node:crypto警告。证据verification/tech-crossline-checks.json、tech-crossline-desktop.png、tech-crossline-mobile.png；Figma是静态文字与动效说明，连续移动以浏览器采样为准。本地修改，尚未提交或发布。
+
+用户最终确认：首页完整两行“从应用开发，／到部署与运维。”使用TechText，鼠标经过显示虚线轮廓和选框；关于我、项目实践、技术能力、教育经历、个人兴趣、简历与联系六个区块标题使用ASCIIText。全部沿用绿色和原文，其他h3项目名/技能分类、简介、按钮、背景、悬浮导航及区块入场不改。最初仅给首页使用ASCIIText的方案已被替代，旧AsciiHeroTitle与useAsciiTitleTheme入口及旧CSS均已移除。
+
+先在Figma保留原四个h1文本及十二个区块标题文本，主标题恢复实体绿色作为TechText默认态；十二个区块标题实际引用同一ASCII纹理PaintStyle S:0efdcd45d8b9482ae66c491c568bbfb81bef92c9,。字符纹理为效果素材，中文本身仍可编辑；布局、字号、行高不变。交互意图293:3691记录轮廓、选框、点击回弹、拖动恢复及降级。整页和关于我局部已目视检查；Figma是静态参考，不能表示Canvas连续互动。
+
+网站HeroTitle复用官方TechText，六个SectionHeading共用AsciiSectionTitle；两者实际调用同一个useTitleTheme读取现有CSS主题、加载Noto Sans SC并测量可用宽度。保留真实h1/h2文本和读屏语义；服务器先显示普通文字，无JS可读；减少动画时直接显示普通标题。WebGL2不可用时六个ASCII标题走官方普通文字回退，TechText的Canvas2D仍工作。无新增依赖，源码与本地适配说明见react-bits/README。
+
+实际桌面1440、900、768和手机390/320验证均无横向溢出；主标题仍为两行，六个h2逐项完整，普通h3中画布数0。主标题桌面176px高、390端108px、320端92px；区块标题桌面49px、手机39px，维持原行高。TechText悬停选框/虚线已目视检查；点击与拖动后画布均恢复同一稳定像素哈希4208566790（点击中971240737，拖动光标grabbing）。ASCII六标题着色器ready1/intro0；细格桌面1.545px、手机1.25px，指针hover约0.72、hue0，点击ripples有效。减少动画时0个文字画布、8行普通文字；无JS8行可见；模拟无WebGL2完整显示六个标题。
+
+回归实际执行终端help及四个悬浮导航锚点，位置约24px；页面原入场未改。最终75文件类型检查零错误/警告/提示，构建通过，保留既有staticrypt node:crypto外置警告。未解锁或复验另一会话正在修改的隐私简历流程，未覆盖手机真机；未发布。
+
+经验：官方ASCIIText默认3px下限在小中文上呈粗块，只将下限开放到1.25px，由适配层按字号/22选细格，不缩小字体或重写着色器；TechText默认CSS的100%画布尺寸会覆盖站点留白，使用更具体的.hero-heading .hero-tech-effect选择器，让字形恢复原字号，布局盒子不变。截图必须等待字体、区块入场和ASCII解码完成，不能把初始暗淡帧当最终画面。证据：verification/tech-ascii-checks.json、tech-ascii-hero-hover.png、tech-ascii-about-desktop.png、tech-ascii-interests-mobile.png、tech-ascii-desktop-full.png。
+
+## React Bits 右侧悬浮导航与区块入场（2026-11-12）
+
+用户最终要求桌面与手机都直接悬浮在页面右侧，不单独预留栏位、不缩窄正文，手机也不使用展开按钮或抽屉。已移除旧顶部导航及其CSS和无引用prompt字段。Navigation复用既有四项navigation数据与官方LineSidebar，仅将点击li适配成真实锚点，支持Tab/Enter；桌面显示栏目名，手机显示01～04和刻度，名称继续供读屏使用。右边缘宽度为108px/40px，手机每项触控高度44px。没有第二套菜单状态或移动端内容源。
+
+七个正文区块和页脚统一经SectionReveal调用官方AnimatedContent：首次进入视口由下方100px/透明到原位/不透明，0.8秒、power3.out、threshold0.1、once。背景、导航和弹窗不包入transform；终端原有文字/光标动效保留。新增依赖gsap，来源与适配说明见src/components/react-bits/README.md。SSR显式visibility:visible，无JS可读；减少动画时八个区块直接显示。
+
+Figma先完成导航源254:3659、桌面实例254:3669、手机实例254:3682及动效说明254:3695；桌面/手机正式页面和两个原型沿同一源继承。旧桌面导航3:309和手机按钮包装21:1454已移除，手机21:1456改为常驻悬浮刻度；正文全宽。首版预留区域和重复品牌被用户否定后已撤回，最后移除手机抽屉，缩为页边编号。静态设计表达默认/活动外观和入场意图，连续动画以浏览器验证，不能逐帧等同。
+
+本地生产预览4341、Edge157：最终63文件类型检查零错误/警告/提示，构建成功，保留原有staticrypt node:crypto外置警告。1440px正文宽1440；390/320手机正文宽分别390/320，导航4链接常驻且按钮/抽屉数量0，无横向溢出。实际点击/键盘四锚点定位约24px，屏幕刚缩放后点击也通过。八区块实测初始opacity0、translateY100，结束opacity1、transform none；返回上方/导航跳转后不重播。减少动画、无JS、终端help、PawLink详情与关闭通过。此轮没有解锁或重新验证另一会话正在修改的隐私简历流程；保留其现有修改，未将旧简历测试结论套到新流程。没有真机验证、没有发布。
+
+排错实证：焦点设置放在平滑滚动后，会在手机仿真中中断滚动；先focus({preventScroll:true})再scrollTo解决。390→320后立即点击仍会被ScrollTrigger的延迟resize刷新打断；阅读其_refreshAll确认会暂停resizeDelay，改为navigateToSection先调用ScrollTrigger.refresh，再取稳定wrapper.offsetTop并滚动，复测通过。不用动画中的getBoundingClientRect作为目标坐标，不加任意延时补丁。
+
+最终运行截图为verification/nav-motion-desktop.png、nav-motion-desktop-full.png、nav-floating-mobile-390.png、nav-floating-mobile-320.png；结构及行为证据verification/nav-motion-checks.json。旧抽屉/展开测试已失效，不作为当前验收。全局React Bits技能安装到C:/Users/solow/.agents/skills/design--react-bits，并实际下载两组件；错误组件名按预期退出1、不写伪源码。本地发现器检出，当前会话已加载；没有证明客户端目录广告自动刷新。全库引用门禁仍有此前已存在的DigitalOcean脚本缺失，新增技能的引用、索引和frontmatter均无错误。
+
+## Gradient ASCII 整站背景（2026-11-12）
+
+用户确认整站共用深绿字符渐变，卡片和终端保留底色，正文和布局保持，本轮不发布。先修改 Figma 桌面108:2140 / 手机108:2690并目视检查，再接入官方 React Bits Gradient ASCII。唯一静态设计源244:3663、文本244:3664，桌面/手机实例244:3665、244:3667，原型沿现有页面组件继承；静态示意无法表达连续着色器动画。字体复用IBM Plex Mono与Portfolio/mono，颜色绑定现有background/accent。绑定paint时opacity被重置为1，实际截图发现过亮；改为文本节点opacity0.10后重新看整页通过，后续必须读取实际值和截图。
+
+网站唯一挂载入口为Portfolio中的SiteBackground，颜色从现有CSS主题读取；固定视口画布覆盖整站，pointer-events:none不拦截输入或滚动。官方TSX/CSS保存在src/components/react-bits，源码保持原貌，来源、SHA256与许可在相邻README/LICENSE中；无新增依赖。移除整页、首屏、联系区的旧纹理引用、CSS和三份SVG，保留终端内部扫描线。导航、首屏和联系区背景透明，标签、隐私说明与终端原底色保留。
+
+54文件类型检查零错误/警告/提示，生产构建通过；构建仍有现存staticrypt的node:crypto浏览器externalization警告，未在本轮修改。复用已运行的本地生产预览4341，在Edge157验证1440×1000、390×844、320×740：横向溢出均为0，滚动到技能/联系区后仍只有一个视口大小canvas。实际help、PawLink详情、简历预览和Escape关闭通过；手机help和项目详情通过。鼠标移动后着色器trail强度约0.983，证明指针进入渲染；减少动画时连续观察绘制次数25→25且trail=0。模拟无WebGL2仍可执行pwd并显示/home/visitor，内容可读。截图已目视检查，证据位于verification/ascii-*.png及ascii-checks.json；没有真机覆盖，也没有发布到正式站点。Figma设计截图与执行状态在私有工作区docs/design-previews/website与背景执行计划中。
 
 ## 关于我 A 版与统一标签（2026-11-12）
 
