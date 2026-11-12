@@ -62,7 +62,7 @@ class TerminalFileSystem {
 const helpText = ['help  ls [-a] [path]  cd [path]  pwd', 'cat <file>  whoami  clear  open resume.pdf',
   '', 'Commands from this portfolio:', 'whoami --about', 'ls ./projects/     ls ./interests/',
   'cat ./skills.conf  cat ./education.log', './connect.sh', '',
-  'Tab: complete  |  Up/Down: history', 'Try ls -a. Some files are a little shy.'].join('\n');
+  'unlock  lock', 'Tab: complete  |  Up/Down: history', 'Try ls -a. Some files are a little shy.'].join('\n');
 
 const HELP_CAT_INTERVAL = 3;
 const helpCat = ['  /\\_/\\', ' ( o.o )', '  > ^ <'].join('\n');
@@ -89,7 +89,8 @@ function createCommands(files: TerminalFileSystem, onHelp: TerminalCommand['fn']
   return commands;
 }
 
-export function createTerminalShell(onResume: () => void, onDirectory: (path: string) => void, onClear: () => void) {
+export function createTerminalShell(onResume: () => void, onDirectory: (path: string) => void,
+    onClear: () => void, privacy: { unlock: () => void; lock: () => void }) {
   const files = new TerminalFileSystem(onResume, onDirectory);
   let helpCycle = 0;
   function help(...args: string[]) {
@@ -101,6 +102,8 @@ export function createTerminalShell(onResume: () => void, onDirectory: (path: st
   }
   const commands = createCommands(files, help);
   commands.clear = { description: 'Clear the terminal', fn: () => { onClear(); return ''; } };
+  commands.unlock = { description: 'Unlock private sections', fn: () => { privacy.unlock(); return ''; } };
+  commands.lock = { description: 'Lock private sections', fn: () => { privacy.lock(); return ''; } };
   function complete(input: string) {
     return completeTerminalInput(input, Object.keys(commands), parent => files.entries(files.path(parent), true));
   }

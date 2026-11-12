@@ -1,19 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
-import ConsoleModule from 'react-console-emulator';
+import { TerminalEmulator } from './TerminalEmulator';
+import type { ConsoleHandle } from './TerminalEmulator';
 import { createTerminalShell } from '../lib/terminalShell';
 import { colorTerminalEntry, terminalColors } from '../lib/terminalColors';
 import { TerminalCode } from './TerminalCode';
 import { TerminalAnsi } from './TerminalAnsi';
 import { useTerminalFeedback } from './useTerminalFeedback';
+import { useTerminalAccess } from './useTerminalAccess';
+import { usePrivacyAccess } from './PrivacyAccess';
 
 interface TerminalConsoleProps { intro: ReactNode; onResume: () => void }
 
-// Node SSR exposes the package's CommonJS default wrapper; Vite's browser bundle unwraps it.
-const consoleExport = ConsoleModule as typeof ConsoleModule | { default: typeof ConsoleModule };
-const Console = 'default' in consoleExport ? consoleExport.default : consoleExport;
-
-function submitCommand(terminal: InstanceType<typeof Console> | null, shell: ReturnType<typeof createTerminalShell>, directory: string, input: HTMLInputElement) {
+function submitCommand(terminal: ConsoleHandle | null, shell: ReturnType<typeof createTerminalShell>, directory: string, input: HTMLInputElement) {
   if (!terminal || !input.value.trim()) { return; }
   const command = input.value;
   const prompt = directory === '~' ? '$' : `${directory} $`;
@@ -24,7 +23,7 @@ function submitCommand(terminal: InstanceType<typeof Console> | null, shell: Ret
   terminal.scrollToBottom();
 }
 
-function completeInput(terminal: InstanceType<typeof Console> | null, shell: ReturnType<typeof createTerminalShell>, input: HTMLInputElement) {
+function completeInput(terminal: ConsoleHandle | null, shell: ReturnType<typeof createTerminalShell>, input: HTMLInputElement) {
   const result = shell.complete(input.value);
   input.value = result.value;
   input.setSelectionRange(result.value.length, result.value.length);
@@ -35,7 +34,7 @@ function completeInput(terminal: InstanceType<typeof Console> | null, shell: Ret
   return false;
 }
 
-function handleConsoleKey(event: KeyboardEvent<HTMLDivElement>, terminal: InstanceType<typeof Console> | null, shell: ReturnType<typeof createTerminalShell>, directory: string) {
+function handleConsoleKey(event: KeyboardEvent<HTMLDivElement>, terminal: ConsoleHandle | null, shell: ReturnType<typeof createTerminalShell>, directory: string) {
   if (!(event.target instanceof HTMLInputElement)) { return; }
   if (event.key === 'Enter') {
     event.preventDefault();
@@ -48,22 +47,20 @@ function handleConsoleKey(event: KeyboardEvent<HTMLDivElement>, terminal: Instan
   return completeInput(terminal, shell, event.target);
 }
 
-function useConsoleInput(onResume: () => void) {
+function useConsoleInput(onResume: () => void, secret: boolean) {
   const root = useRef<HTMLDivElement>(null);
-  const consoleRef = useRef<InstanceType<typeof Console>>(null);
+  const consoleRef = useRef<ConsoleHandle>(null);
   const resume = useRef(onResume);
+  const privacy = usePrivacyAccess();
+  const privacyRef = useRef(privacy);
+  privacyRef.current = privacy;
   resume.current = onResume;
   const [directory, setDirectory] = useState('~');
-  const [shell] = useState(() => createTerminalShell(() => resume.current(), setDirectory, () => consoleRef.current?.clearStdout()));
-  const feedback = useTerminalFeedback(root, shell);
-  useEffect(() => {
-    const input = root.current?.querySelector('input');
-    input?.setAttribute('aria-label', 'Terminal command');
-    input?.setAttribute('autocapitalize', 'off');
-    input?.setAttribute('autocorrect', 'off');
-    input?.setAttribute('enterkeyhint', 'send');
-    input?.setAttribute('spellcheck', 'false');
-  }, []);
+  const [shell] = useState(() => createTerminalShell(() => resume.current(), setDirectory,
+    () => consoleRef.current?.clearStdout(), {
+      unlock: () => privacyRef.current.requestUnlock(), lock: () => privacyRef.current.access.lock(),
+    }));
+  const feedback = useTerminalFeedback(root, shell, secret);
   function complete(event: KeyboardEvent<HTMLDivElement>) {
     if (event.nativeEvent.isComposing) { event.stopPropagation(); return; }
     const noMatch = handleConsoleKey(event, consoleRef.current, shell, directory);
@@ -74,17 +71,13 @@ function useConsoleInput(onResume: () => void) {
 }
 
 export function TerminalConsole({ intro, onResume }: TerminalConsoleProps) {
-  const { root, consoleRef, directory, complete, feedback } = useConsoleInput(onResume);
+  const secret = usePrivacyAccess().access.state.phase === 'unlock';
+  const { root, consoleRef, directory, complete, feedback } = useConsoleInput(onResume, secret);
+  const access = useTerminalAccess(root, consoleRef);
   return (
-    <div ref={root} className="terminal-console" lang="en" onKeyDownCapture={complete}>
-      <Console ref={consoleRef} commands={{}} noDefaults noNewlineParsing welcomeMessage={intro} promptLabel={directory === '~' ? '$' : `${directory} $`}
-        autoFocus={false} errorText="Command not found. Type help."
-        className="terminal-emulator" inputClassName="terminal-input" inputAreaClassName="terminal-input-row"
-        messageClassName="terminal-response" style={{ backgroundColor: 'transparent', minHeight: 0, padding: 24, borderRadius: 0 }}
-        contentStyle={{ padding: 0, height: 'auto', color: 'var(--text)', font: '14px/24px var(--font-mono)' }}
-        inputStyle={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)', fontSize: 16, lineHeight: '26px', minWidth: 0, height: 26, padding: 0 }}
-        inputAreaStyle={{ marginTop: 24, gap: 8, alignItems: 'center' }} promptLabelStyle={{ color: 'var(--accent)', font: '16px/26px var(--font-mono)', paddingTop: 0 }}
-        messageStyle={{ color: 'var(--text)', font: '14px/24px var(--font-mono)', lineHeight: '24px', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }} />
+    <div ref={root} className="terminal-console" lang="en" onKeyDownCapture={(event) => { if (!access.handleKey(event)) { complete(event); } }}>
+      <TerminalEmulator terminalRef={consoleRef} intro={intro} secret={secret} disabled={access.busy}
+        prompt={secret ? 'share-code $' : directory === '~' ? '$' : `${directory} $`} />
       {feedback}
     </div>
   );

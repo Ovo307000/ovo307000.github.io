@@ -6,8 +6,12 @@ dist/
 .env.*
 !.env.example
 
-# Local design previews; resume-page.png is a website build input.
+# Local design previews.
 /*.png
-!/resume-page.png
 /verification/
 /figma-terminal-state.json
+
+# Private sources and local access codes must remain outside this repository.
+/resume.pdf
+/private-details.json
+/share-code.txt*

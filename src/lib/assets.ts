@@ -10,20 +10,16 @@ import pageScanlines from '../assets/figma/65d1e.svg?url';
 import heroTexture from '../assets/figma/630eb.svg?url';
 import contactTexture from '../assets/figma/7b5f9.svg?url';
 import bullet from '../assets/figma/bb02f.svg?url';
-import timelineStop from '../assets/figma/453f1.svg?url';
 import pawlink from '../../assets/pawlink-hero.png?url';
 import sky from '../../assets/sky-food.jpg?url';
 import lease from '../../assets/lease-house.png?url';
 import kcd from '../../assets/kcd2-scene.jpg?url';
-import gongmao from '../assets/figma/1fd0b.png?url';
-import aufe from '../assets/figma/6c8d1.png?url';
 import mail from '../assets/figma/mail.svg?url';
 import github from '../assets/figma/github.svg?url';
 import file from '../assets/figma/file-text.svg?url';
-import resume from '../../resume.pdf?url';
-import resumePage from '../../resume-page.png?url';
+
+import privateResume from '../../resume-private.enc?url';
 
 export const icons = { 'gamepad-2': gamepad, code, terminal, 'terminal-small': terminalSmall, database, container, 'arrow-up-right': arrowUpRight, mail, github, file };
 export const covers: Record<string, string> = { pawlink, 'sky-take-out': sky, lease, 'kcd2-mods': kcd };
-export const emblems: Record<string, string> = { 'assets/school-gongmao.png': gongmao, 'assets/school-aufe.png': aufe };
-export const assets = { terminalScanlines, pageScanlines, heroTexture, contactTexture, bullet, timelineStop, resume, resumePage };
+export const assets = { terminalScanlines, pageScanlines, heroTexture, contactTexture, bullet, privateResume };

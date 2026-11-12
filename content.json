@@ -1,9 +1,6 @@
 {
   "locale": "zh-CN",
   "identity": {
-    "name": null,
-    "phone": null,
-    "email": "solowzl@outlook.com",
     "githubUrl": "https://github.com/Ovo307000",
     "resumeUrl": null
   },
@@ -148,11 +145,7 @@
     "explorationTitle": "技术探索",
     "developmentTags": ["Java", "TypeScript", "Linux"],
     "explorationTags": ["Lua", "C++"],
-    "educationTitle": "教育经历",
-    "education": [
-      {"school": "安徽工贸学院", "englishSchool": "Anhui Industry and Trade College", "major": "软件工程", "englishMajor": "Software Engineering", "period": "2020.10 — 2023.06", "logoPath": "assets/school-gongmao.png"},
-      {"school": "安徽财经大学", "englishSchool": "Anhui University of Finance and Economics", "major": "计算机科学与技术", "englishMajor": "Computer Science and Technology", "period": "2024.03 — 2026.06", "logoPath": "assets/school-aufe.png"}
-    ]
+    "educationTitle": "教育经历"
   },
   "interestsSection": {
     "eyebrow": "$ ls ./interests/",
@@ -192,7 +185,6 @@
     "eyebrow": "$ ./connect.sh",
     "title": "简历与联系",
     "description": "期待应用开发、部署与运维相关的工作机会。",
-    "emailLabel": "solowzl@outlook.com",
     "githubLabel": "Ovo307000",
     "resumeLabel": "在线预览简历"
   },

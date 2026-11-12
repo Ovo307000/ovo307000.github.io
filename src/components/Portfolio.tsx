@@ -13,14 +13,17 @@ import { ContactSection } from './ContactSection';
 import { Footer } from './Footer';
 import { TerminalDialog } from './ui/TerminalDialog';
 import { ResumeViewer } from './ResumeViewer';
+import { usePortfolioPrivacy } from './usePortfolioPrivacy';
+import { PrivacyAccessProvider } from './PrivacyAccess';
 
 export function Portfolio() {
   const [target, setTarget] = useState<string | null>(null);
   const project = projects.find(item => item.id === target);
-  const onResume = () => setTarget('resume');
+  const privacy = usePortfolioPrivacy(setTarget);
+  const { onResume } = privacy;
   const title = project ? `${project.id}.md` : content.resumePreview.title;
   return (
-    <div className="portfolio" id="top">
+    <PrivacyAccessProvider value={privacy}><div className="portfolio" id="top">
       <a className="skip-link" href="#main">跳到主要内容</a>
       <img className="page-texture" src={assets.pageScanlines} alt="" aria-hidden="true" />
       <Navigation />
@@ -32,8 +35,8 @@ export function Portfolio() {
       <Footer />
       <TerminalDialog title={title} open={target !== null} onClose={() => setTarget(null)}>
         {project && <ProjectCard project={project} detail />}
-        {target === 'resume' && <ResumeViewer />}
+        {target === 'resume' && privacy.access.state.urls && <ResumeViewer urls={privacy.access.state.urls} />}
       </TerminalDialog>
-    </div>
+    </div></PrivacyAccessProvider>
   );
 }

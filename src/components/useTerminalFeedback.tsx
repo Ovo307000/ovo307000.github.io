@@ -5,23 +5,24 @@ import type { createTerminalShell } from '../lib/terminalShell';
 import { configureTerminalHint, markTerminalUsed } from '../lib/terminalUsage';
 import { TerminalCaret } from './TerminalCaret';
 
-type TerminalShell = ReturnType<typeof createTerminalShell>;
+type TerminalShell = Pick<ReturnType<typeof createTerminalShell>, 'complete'>;
 interface Preview { value: string; suffix: string; scrollLeft: number; caretPrefix: string | null }
 
-function readPreview(input: HTMLInputElement, shell: TerminalShell, composing: boolean): Preview {
+function readPreview(input: HTMLInputElement, shell: TerminalShell | undefined, composing: boolean, secret: boolean): Preview {
   const value = input.value;
   const atEnd = input.selectionStart === value.length && input.selectionEnd === value.length;
   const focused = document.activeElement === input;
   const active = focused && !composing && atEnd && value.length > 0;
-  const completion = active ? shell.complete(value).value : value;
-  const caretPrefix = focused && (composing || input.selectionStart === input.selectionEnd) ? value.slice(0, input.selectionEnd ?? 0) : null;
-  return { value, suffix: completion.startsWith(value) ? completion.slice(value.length) : '', scrollLeft: input.scrollLeft, caretPrefix };
+  const displayValue = secret ? '•'.repeat(value.length) : value;
+  const completion = active && !secret && shell ? shell.complete(value).value : value;
+  const caretPrefix = focused && (composing || input.selectionStart === input.selectionEnd) ? displayValue.slice(0, input.selectionEnd ?? 0) : null;
+  return { value: displayValue, suffix: !secret && completion.startsWith(value) ? completion.slice(value.length) : '', scrollLeft: input.scrollLeft, caretPrefix };
 }
 
-function observeInput(input: HTMLInputElement, shell: TerminalShell, update: (preview: Preview) => void, reset: () => void) {
+function observeInput(input: HTMLInputElement, shell: TerminalShell | undefined, update: (preview: Preview) => void, reset: () => void, secret: boolean) {
   let composing = false;
-  function refresh() { update(readPreview(input, shell, composing)); }
-  function edit() { markTerminalUsed(input); reset(); refresh(); }
+  function refresh() { update(readPreview(input, shell, composing, secret)); }
+  function edit() { if (!secret) { markTerminalUsed(input); } reset(); refresh(); }
   function startComposition() { composing = true; refresh(); }
   function endComposition() { composing = false; edit(); }
   function keyUp(event: Event) {
@@ -38,17 +39,17 @@ function observeInput(input: HTMLInputElement, shell: TerminalShell, update: (pr
   return () => { for (const [name, listener] of listeners) { input.removeEventListener(name, listener); } };
 }
 
-export function useTerminalFeedback(root: RefObject<HTMLDivElement | null>, shell: TerminalShell) {
+export function useTerminalFeedback(root: RefObject<HTMLDivElement | null>, shell?: TerminalShell, secret = false) {
   const [input, setInput] = useState<HTMLInputElement | null>(null);
   const [preview, setPreview] = useState<Preview>({ value: '', suffix: '', scrollLeft: 0, caretPrefix: null });
   const [noMatch, setNoMatch] = useState(false);
   useEffect(() => {
     const target = root.current?.querySelector('input');
     if (!target) { return; }
-    configureTerminalHint(target);
+    if (!secret) { configureTerminalHint(target); }
     setInput(target);
-    return observeInput(target, shell, setPreview, () => setNoMatch(false));
-  }, [root, shell]);
+    return observeInput(target, shell, setPreview, () => setNoMatch(false), secret);
+  }, [root, shell, secret]);
   const display = input?.parentElement ? createPortal(
     <>
       <span className="terminal-ghost" aria-hidden="true">

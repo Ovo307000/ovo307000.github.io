@@ -22,15 +22,14 @@ export function profileOutput(): TerminalFile {
 }
 
 export function contactOutput(): TerminalFile {
-  const { email, githubUrl } = content.identity;
-  return { text: `email: ${email}\ngithub: ${githubUrl}\nresume: resume.pdf`, language: 'yaml' };
+  const { githubUrl } = content.identity;
+  return { text: `github: ${githubUrl}\nresume: resume.pdf\nprivate_details: share code required`, language: 'yaml' };
 }
 
 function sectionFiles(): [string, TerminalFile][] {
   const about = `# About me\n\n${content.about.englishDescription}`;
   const toolkit = skills.map(skill => `[${skill.number}]\ntools = ${skill.tools.join(', ')}`).join('\n\n');
-  const education = content.about.education.map(entry =>
-    `${entry.period.replace(' — ', ' -> ')}\n${entry.englishSchool}\n${entry.englishMajor}`).join('\n\n');
+  const education = 'Protected record. Use unlock; details are displayed in the education section.';
   const contact = contactOutput().text;
   return [
     [`${homeDirectory}/about.md`, { text: about, language: 'markdown' }],

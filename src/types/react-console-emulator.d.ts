@@ -9,6 +9,9 @@ declare module 'react-console-emulator' {
     autoFocus?: boolean;
     noDefaults?: boolean;
     noNewlineParsing?: boolean;
+    noHistory?: boolean;
+    noEchoBack?: boolean;
+    disabled?: boolean;
     ignoreCommandCase?: boolean;
     className?: string;
     inputClassName?: string;
