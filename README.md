@@ -20,9 +20,9 @@
 
 ## 隐私区块与分享码
 
-页面只维护一份完整资料，不另做删减版 PDF。完整 PDF、预览、邮箱及教育明细和校徽一并使用 [StatiCrypt](https://github.com/robinmoisson/staticrypt) 加密为 `resume-private.enc`。未解锁时，原区块显示 [use-scramble](https://github.com/tol-is/use-scramble) 驱动的随机乱码占位；占位字符不来自真实资料，页面也不通过 CSS 隐藏真实内容。公开构建不需要私有源文件或分享码。
+页面只维护一份完整资料，不另做删减版 PDF。完整 PDF、预览、邮箱及教育明细和校徽一并使用 [StatiCrypt](https://github.com/robinmoisson/staticrypt) 加密为 `resume-private.enc`。未解锁时，原区块显示 [React Bits DecryptedText](https://reactbits.dev/text-animations/decrypted-text) 驱动的乱码提示；动画只接收公开占位文字，页面不通过 CSS 隐藏真实内容。公开构建不需要私有源文件或分享码。
 
-点击乱码区块后，首页现有终端负责提示、输入和验证反馈。分享码遮蔽显示，不回显、不进入命令历史或补全。成功后教育和联系方式回原区块显示，简历仍用原查看器预览和下载；终端不承载这些内容。输入 `unlock` 开始验证，`Esc` 取消，`lock` 隐藏全部私有区块并释放临时 Blob URL，刷新也回到锁定态。关闭 PDF 查看器不退出本页已解锁状态。分享码不写入源码、网址、日志或浏览器持久存储。
+点击任意未解锁入口后，弹出复用现有终端外壳和输入组件的独立窗口。首页终端保持普通命令功能。空码和错码停留在输入提示，验证成功后教育和联系方式回原区块显示，简历才进入原查看器。分享码遮蔽显示，不回显、不进入历史或补全。首页 `unlock` 打开同一输入窗口；`Esc` 或红灯取消并恢复页面滚动，`lock` 隐藏全部私有区块并释放临时资源，刷新也回到锁定态。关闭 PDF 不退出本页解锁状态。分享码不写入源码、网址、日志或持久存储。
 
 维护者在本机更新完整资料后运行：
 
@@ -94,4 +94,4 @@ npm run resume:generate -- --rotate # 主动生成新分享码并重新加密
 
 本任务新增网站资料，未修改原有简历、PDF 或原简历 Figma 文件。
 
-StatiCrypt 3.5.4 与 use-scramble 2.2.15 的 MIT 许可分别保存在 STATICRYPT-LICENSE.txt 和 USE-SCRAMBLE-LICENSE.txt。
+StatiCrypt 的 MIT 许可保存在 STATICRYPT-LICENSE.txt；React Bits 源码及其 MIT + Commons Clause 许可位于 src/components/react-bits/。

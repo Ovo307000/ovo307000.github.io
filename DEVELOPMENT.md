@@ -62,7 +62,7 @@ Figma 标签源为 `206:3326`（Technology / Tag）；技能/桌面兴趣源 `3:
 5. `DirectoryItem`、`SkillsSection`、`EducationTimeline`、`InterestsSection`。
 6. `ResumeViewer`、`ContactSection`、`Footer`，由 `Portfolio` 组合。
 
-项目和技能按 JSON 的展示序号排序，不改变数组下标。手机项目摘要与桌面/详情共用同一项目对象；无仓库 URL 的项目不会生成虚构链接。受保护区块用随机乱码占位，点击后首页终端接管分享码输入和提示；全页只维护一个解锁状态。成功后资料在原区块显示，完整 PDF 沿用原查看器，支持50%–300%缩放及原文件下载，不再维护独立脱敏副本或额外表单。`unlock`、`lock` 接入既有终端命令表；终端不输出实际私有字段。
+项目和技能按 JSON 展示序号排序，不改变数组下标。手机摘要与桌面/详情共用同一项目对象；无仓库 URL 的项目不生成虚构链接。受保护区块使用 React Bits DecryptedText，只动画公开占位文字。所有未解锁入口打开独立 share-code.sh 终端窗口，复用 TerminalDialog、TerminalEmulator 和隐私状态，首页终端不接管输入。空码/错码仅提示，成功才进入完整 PDF 或原位恢复资料。`unlock` 打开同一窗口，`lock` 释放私有资源。useTerminalDialog 同步 open=false 和卸载到原生 close，防止遮罩与 body 滚动锁残留。完整 PDF 沿用原查看器的缩放及下载。
 
 ## 验证与经验
 
