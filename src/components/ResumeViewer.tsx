@@ -6,28 +6,28 @@ import { usePdfZoom } from './ui/usePdfZoom';
 import type { ResumeUrls } from '../lib/resumeContract';
 import '../styles/pdf.css';
 
-function ZoomControls({ scale, changeScale, fit }: {
-  scale: number; changeScale: (amount: number) => void; fit: () => void;
+function ZoomControls({ scale, zoomIn, zoomOut, canZoomIn, canZoomOut, fit }: {
+  scale: number; zoomIn: () => void; zoomOut: () => void;
+  canZoomIn: boolean; canZoomOut: boolean; fit: () => void;
 }) {
   return (
     <div className="pdf-zoom-controls" aria-label="Preview zoom controls" title="Ctrl + wheel to zoom">
-      <button type="button" className="pdf-zoom-button" aria-label="Zoom out" title="Zoom out" disabled={scale <= 0.5} onClick={() => changeScale(-0.25)}><Minus size={16} aria-hidden="true" /></button>
+      <button type="button" className="pdf-zoom-button" aria-label="Zoom out" title="Zoom out" disabled={!canZoomOut} onClick={zoomOut}><Minus size={16} aria-hidden="true" /></button>
       <span className="pdf-scale" aria-live="polite">{Math.round(scale * 100)}%</span>
-      <button type="button" className="pdf-zoom-button" aria-label="Zoom in" title="Zoom in" disabled={scale >= 3} onClick={() => changeScale(0.25)}><Plus size={16} aria-hidden="true" /></button>
+      <button type="button" className="pdf-zoom-button" aria-label="Zoom in" title="Zoom in" disabled={!canZoomIn} onClick={zoomIn}><Plus size={16} aria-hidden="true" /></button>
       <button type="button" className="pdf-fit-button" title="Fit page width" onClick={fit}>Fit width</button>
     </div>
   );
 }
-
-function ResumeDocument({ pdf, preview }: { pdf: string; preview: string }) {
+export function ResumeViewer({ urls: { pdf, preview } }: { urls: ResumeUrls }) {
   const [imageFailed, setImageFailed] = useState(false);
-  const { scale, scrollRef, imageRef, changeScale, fit } = usePdfZoom();
+  const { scale, scrollRef, imageRef, zoomIn, zoomOut, canZoomIn, canZoomOut, fit } = usePdfZoom();
   return (
     <div className="pdf-viewer">
       <div className="pdf-toolbar">
         <div className="pdf-status">
           <span className="pdf-page-count">{content.resumePreview.privacyHint}</span>
-          <ZoomControls scale={scale} changeScale={changeScale} fit={fit} />
+          <ZoomControls scale={scale} zoomIn={zoomIn} zoomOut={zoomOut} canZoomIn={canZoomIn} canZoomOut={canZoomOut} fit={fit} />
         </div>
         <Button asChild variant="subtle" size="small" className="pdf-download"><a href={pdf} download="resume.pdf" aria-label={content.resumePreview.downloadLabel} title={content.resumePreview.downloadLabel}><Download size={16} aria-hidden="true" />Download</a></Button>
       </div>
@@ -36,8 +36,4 @@ function ResumeDocument({ pdf, preview }: { pdf: string; preview: string }) {
       </div>
     </div>
   );
-}
-
-export function ResumeViewer({ urls }: { urls: ResumeUrls }) {
-  return <ResumeDocument pdf={urls.pdf} preview={urls.preview} />;
 }

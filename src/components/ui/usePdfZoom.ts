@@ -4,6 +4,7 @@ import { usePinch } from '@use-gesture/react';
 
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 3;
+const SCALE_STEP = 0.25;
 
 function clampScale(scale: number) {
   return Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale));
@@ -66,5 +67,11 @@ export function usePdfZoom() {
     scrollRef.current?.scrollTo({ left: 0, top: 0, behavior: 'instant' });
   }
 
-  return { scale, scrollRef, imageRef, changeScale: (amount: number) => zoomTo(scaleRef.current + amount), fit };
+  return {
+    scale, scrollRef, imageRef, fit,
+    zoomIn: () => zoomTo(scaleRef.current + SCALE_STEP),
+    zoomOut: () => zoomTo(scaleRef.current - SCALE_STEP),
+    canZoomIn: scale < MAX_SCALE,
+    canZoomOut: scale > MIN_SCALE,
+  };
 }
