@@ -1,36 +1,16 @@
 import { assets } from './assets';
+import { isPrivateProfile, RESUME_FORMAT } from './resumeContract';
+import type { ResumeUrls } from './resumeContract';
 
 interface EncryptedResume {
-  format: 'staticrypt-v3';
+  format: typeof RESUME_FORMAT;
   salt: string;
   ciphertext: string;
 }
 
-export interface ResumeUrls {
-  pdf: string;
-  preview: string;
-  profile: PrivateProfile;
-}
-
-export interface PrivateProfile {
-  email: string;
-  education: { school: string; major: string; period: string; logo: string }[];
-}
-
-function isPrivateProfile(value: unknown): value is PrivateProfile {
-  if (typeof value !== 'object' || value === null ||
-      !('email' in value) || typeof value.email !== 'string' ||
-      !('education' in value) || !Array.isArray(value.education)) { return false; }
-  return value.education.length > 0 && value.education.every((entry: unknown) => {
-    if (typeof entry !== 'object' || entry === null) { return false; }
-    return ['school', 'major', 'period', 'logo'].every((key) =>
-      key in entry && typeof Reflect.get(entry, key) === 'string' && Reflect.get(entry, key).length > 0);
-  });
-}
-
 function isEncryptedResume(value: unknown): value is EncryptedResume {
   return typeof value === 'object' && value !== null &&
-    'format' in value && value.format === 'staticrypt-v3' &&
+    'format' in value && value.format === RESUME_FORMAT &&
     'salt' in value && typeof value.salt === 'string' &&
     'ciphertext' in value && typeof value.ciphertext === 'string';
 }

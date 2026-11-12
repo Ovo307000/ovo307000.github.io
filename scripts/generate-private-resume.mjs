@@ -5,6 +5,7 @@ import { homedir } from 'node:os';
 import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
+import { isPrivateProfile, RESUME_FORMAT } from '../src/lib/resumeContract.ts';
 
 const require = createRequire(import.meta.url);
 const cryptoEngine = require('staticrypt/lib/cryptoEngine.js');
@@ -109,14 +110,7 @@ function validatePaths(options) {
 }
 
 function validateProfile(profile) {
-  if (!profile || typeof profile !== 'object' || Array.isArray(profile)) {
-    throw new Error('The details JSON must contain a profile object.');
-  }
-  if (typeof profile.email !== 'string' || !profile.email.trim()) {
-    throw new Error('The profile email must be a non-empty string.');
-  }
-  if (!Array.isArray(profile.education)) { throw new Error('The profile education must be an array.'); }
-  if (profile.education.length === 0) { throw new Error('The profile education must contain at least one entry.'); }
+  if (!isPrivateProfile(profile)) { throw new Error('The details JSON must contain a non-empty email and education records with school, major, period and logo.'); }
   for (const [index, entry] of profile.education.entries()) {
     validateEducation(entry, index);
   }
@@ -124,14 +118,6 @@ function validateProfile(profile) {
 }
 
 function validateEducation(entry, index) {
-  if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
-    throw new Error(`Education entry ${index + 1} must be an object.`);
-  }
-  for (const field of ['school', 'major', 'period', 'logo']) {
-    if (typeof entry[field] !== 'string' || !entry[field].trim()) {
-      throw new Error(`Education entry ${index + 1} ${field} must be a non-empty string.`);
-    }
-  }
   const logo = entry.logo;
   const bytes = Buffer.from(logo, 'base64');
   if (bytes.toString('base64') !== logo || bytes.subarray(0, 8).toString('hex') !== '89504e470d0a1a0a') {
@@ -170,7 +156,7 @@ async function main() {
   const { code, changed } = await readShareCode(options['code-file'], options.rotate);
   const salt = cryptoEngine.generateRandomSalt();
   const ciphertext = await codec.encode(JSON.stringify(payload), code, salt);
-  const message = JSON.stringify({ format: 'staticrypt-v3', salt, ciphertext });
+  const message = JSON.stringify({ format: RESUME_FORMAT, salt, ciphertext });
   await saveGeneratedResume(options, message, code, changed);
   console.log(`Encrypted resume updated. Share code ${changed ? 'created or rotated' : 'reused'}.`);
   console.log(`Share code file: ${options['code-file']}`);

@@ -3,7 +3,7 @@ import { Download, Minus, Plus } from 'lucide-react';
 import { content } from '../lib/content';
 import { Button } from './ui/button';
 import { usePdfZoom } from './ui/usePdfZoom';
-import type { ResumeUrls } from '../lib/privateResume';
+import type { ResumeUrls } from '../lib/resumeContract';
 import '../styles/pdf.css';
 
 function ZoomControls({ scale, changeScale, fit }: {

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { decryptResume, revokeResumeUrls } from '../lib/privateResume';
-import type { ResumeUrls } from '../lib/privateResume';
+import type { ResumeUrls } from '../lib/resumeContract';
 
 interface PrivateResumeState {
   phase: 'public' | 'unlock' | 'private';
