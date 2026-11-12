@@ -143,10 +143,11 @@
     "development": "在 Java 项目中，围绕管理后台与移动端业务开展开发和运行实践；在 PawLink 中，涉及 Next.js、React、Prisma 与 PostgreSQL。部署侧使用 Docker Compose、Nginx 和 Shell，结合容器状态与应用日志排查问题。",
     "exploration": "也在探索 Lua 与 C++ 原生插件方向，把游戏模组开发作为了解软件行为的一条路径。希望把开发、部署和问题定位串起来，让项目不止停留在代码仓库里。",
     "focusLabel": "专业方向",
-    "focusTitle": "应用开发\n与运维实践",
+    "focusTitle": "应用开发与运维实践",
     "developmentTitle": "项目实践",
     "explorationTitle": "技术探索",
-    "tags": ["Java", "TypeScript", "Linux"],
+    "developmentTags": ["Java", "TypeScript", "Linux"],
+    "explorationTags": ["Lua", "C++"],
     "educationTitle": "教育经历",
     "education": [
       {"school": "安徽工贸学院", "englishSchool": "Anhui Industry and Trade College", "major": "软件工程", "englishMajor": "Software Engineering", "period": "2020.10 — 2023.06", "logoPath": "assets/school-gongmao.png"},
