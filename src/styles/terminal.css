@@ -38,6 +38,12 @@
 .terminal-input { caret-color: var(--accent); caret-shape: block; }
 .terminal-input::placeholder { color: var(--muted); opacity: 1; }
 .terminal-input:focus::placeholder { color: transparent; opacity: 0; }
+.terminal-input-row { display: grid !important; grid-template-columns: max-content minmax(0, 1fr); row-gap: 4px !important; }
+.terminal-input-row > input { grid-column: 2; grid-row: 1; position: relative; z-index: 1; width: 100%; }
+.terminal-ghost { grid-column: 2; grid-row: 1; min-width: 0; overflow: hidden; pointer-events: none; color: var(--muted); font: 16px/26px var(--font-mono); }
+.terminal-ghost > span { display: block; }
+.terminal-ghost-prefix { visibility: hidden; }
+.terminal-input-row > .terminal-completion-status { grid-column: 1 / -1; white-space: normal; overflow-wrap: anywhere; color: var(--muted); font: 12px/20px var(--font-mono); }
 .terminal-response { margin-top: 8px; }
 .terminal-response .profile-output { margin-top: -8px; }
 .terminal-input-row > span { white-space: nowrap; }

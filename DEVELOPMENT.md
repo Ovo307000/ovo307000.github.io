@@ -2,6 +2,16 @@
 
 本目录已实现 Figma 个人主页，入口为 `src/pages/index.astro`，通过 `Portfolio` 激活 React 交互。内容来自同一份 `content.json`，桌面与手机通过响应式布局共享组件；项目详情和简历预览共用 `TerminalWindow`。
 
+## 终端实时补全与无匹配反馈（2026-11-12）
+
+用户确认：输入`who`后显示淡色`ami`，Tab接受；无匹配在输入行下方显示`No matching commands or paths`，继续输入即清除，重复Tab不新增输出。先更新Figma状态参考149:3202中的原有桌面/手机内容源，保留共享终端90:1552实例和主题色，再查看实际呈现并实现。
+
+`useTerminalFeedback.tsx`通过React portal将预览和状态放入库的原有输入行；预览与Tab均调用现有`shell.complete`，没有新命令表、解析器或依赖。原生输入仍由react-console-emulator5.0.2负责；输入、删除/粘贴、焦点、选区、横向滚动与历史按键后同步预览。前缀占位不可见、预览不可交互且从辅助阅读隐藏；无匹配通过status单独显示，不进stdout或历史。已核实该库用程序赋值恢复历史，不会产生input事件，因此仅监听输入变化不足。中文组合输入期间不接受补全或提交；本轮未覆盖真实手机输入法。
+
+实测还发现库默认content高度100%会让长输出后的新提示贴近裁切边界；改为内容自适应高度，并复用原有scrollToBottom将新提示带入视口。现有字体、8px提示符间距和输出高亮保留，状态为12px/20px、距输入4px。Figma对应状态复用muted变量。
+
+本地4331浏览器实际逐字输入验证：who→预览ami→Tab→whoami→Enter；兴趣目录cat ./edu连续三次Tab仅一条状态且stdout数量不变；编辑/历史/提交清除状态；cat res、whoami --a、cd pro、cat pro多候选及空Tab命令列表正常；中间光标/选区/失焦隐藏预览，长输入scrollLeft183.2px时预览同步位移，Tab仍补全。1440/390/320px无横向溢出（手机scrollWidth385/314px），clear与PDF打开/关闭正常，浏览器错误/警告为空。40文件类型检查零诊断，最终静态构建成功。截图位于verification/terminal-inline-desktop.png、terminal-inline-mobile.png、terminal-feedback-desktop.png、terminal-feedback-mobile.png及terminal-feedback-320.png。以上为本地验证，正式发布与提交状态见本轮计划。
+
 ## 启动与检查
 
 推荐使用 Node.js 22.23.4 或更高版本，在本目录运行 `npm install`，再运行 `npm run dev`。开发依赖包含项目本地 Node 22，以兼容本机较旧的全局 Node；`npm run check` 检查 Astro 和 TypeScript，`npm run build` 生成静态站点，`npm run preview` 预览构建结果。

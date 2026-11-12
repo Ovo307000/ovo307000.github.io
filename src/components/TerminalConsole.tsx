@@ -5,6 +5,7 @@ import { createTerminalShell } from '../lib/terminalShell';
 import { colorTerminalEntry, terminalColors } from '../lib/terminalColors';
 import { TerminalCode } from './TerminalCode';
 import { TerminalAnsi } from './TerminalAnsi';
+import { useTerminalFeedback } from './useTerminalFeedback';
 
 interface TerminalConsoleProps { intro: ReactNode; onResume: () => void }
 
@@ -27,12 +28,11 @@ function completeInput(terminal: InstanceType<typeof Console> | null, shell: Ret
   const result = shell.complete(input.value);
   input.value = result.value;
   input.setSelectionRange(result.value.length, result.value.length);
-  if (result.candidates.length === 1) { return; }
-  const message = result.candidates.length
-    ? result.candidates.map(colorTerminalEntry).join('  ')
-    : terminalColors.cyan('No matches.');
+  if (result.candidates.length < 2) { return result.candidates.length === 0; }
+  const message = result.candidates.map(colorTerminalEntry).join('  ');
   terminal?.pushToStdout(<TerminalAnsi text={message} />);
   terminal?.scrollToBottom();
+  return false;
 }
 
 function handleConsoleKey(event: KeyboardEvent<HTMLDivElement>, terminal: InstanceType<typeof Console> | null, shell: ReturnType<typeof createTerminalShell>, directory: string) {
@@ -41,11 +41,11 @@ function handleConsoleKey(event: KeyboardEvent<HTMLDivElement>, terminal: Instan
     event.preventDefault();
     event.stopPropagation();
     submitCommand(terminal, shell, directory, event.target);
-    return;
+    return false;
   }
   if (event.key !== 'Tab' || event.shiftKey) { return; }
   event.preventDefault();
-  completeInput(terminal, shell, event.target);
+  return completeInput(terminal, shell, event.target);
 }
 
 function useConsoleInput(onResume: () => void) {
@@ -55,6 +55,7 @@ function useConsoleInput(onResume: () => void) {
   resume.current = onResume;
   const [directory, setDirectory] = useState('~');
   const [shell] = useState(() => createTerminalShell(() => resume.current(), setDirectory, () => consoleRef.current?.clearStdout()));
+  const feedback = useTerminalFeedback(root, shell);
   useEffect(() => {
     const input = root.current?.querySelector('input');
     input?.setAttribute('aria-label', 'Terminal command');
@@ -65,23 +66,27 @@ function useConsoleInput(onResume: () => void) {
     input?.setAttribute('spellcheck', 'false');
   }, []);
   function complete(event: KeyboardEvent<HTMLDivElement>) {
-    handleConsoleKey(event, consoleRef.current, shell, directory);
+    if (event.nativeEvent.isComposing) { event.stopPropagation(); return; }
+    const noMatch = handleConsoleKey(event, consoleRef.current, shell, directory);
+    if (noMatch !== undefined) { feedback.setNoMatch(noMatch); }
+    if (noMatch) { consoleRef.current?.scrollToBottom(); }
   }
-  return { root, consoleRef, directory, complete };
+  return { root, consoleRef, directory, complete, feedback: feedback.display };
 }
 
 export function TerminalConsole({ intro, onResume }: TerminalConsoleProps) {
-  const { root, consoleRef, directory, complete } = useConsoleInput(onResume);
+  const { root, consoleRef, directory, complete, feedback } = useConsoleInput(onResume);
   return (
     <div ref={root} className="terminal-console" lang="en" onKeyDownCapture={complete}>
       <Console ref={consoleRef} commands={{}} noDefaults noNewlineParsing welcomeMessage={intro} promptLabel={directory === '~' ? '$' : `${directory} $`}
         autoFocus={false} errorText="Command not found. Type help."
         className="terminal-emulator" inputClassName="terminal-input" inputAreaClassName="terminal-input-row"
         messageClassName="terminal-response" style={{ backgroundColor: 'transparent', minHeight: 0, padding: 24, borderRadius: 0 }}
-        contentStyle={{ padding: 0, color: 'var(--text)', font: '14px/24px var(--font-mono)' }}
+        contentStyle={{ padding: 0, height: 'auto', color: 'var(--text)', font: '14px/24px var(--font-mono)' }}
         inputStyle={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)', fontSize: 16, lineHeight: '26px', minWidth: 0, height: 26, padding: 0 }}
         inputAreaStyle={{ marginTop: 24, gap: 8, alignItems: 'center' }} promptLabelStyle={{ color: 'var(--accent)', font: '16px/26px var(--font-mono)', paddingTop: 0 }}
         messageStyle={{ color: 'var(--text)', font: '14px/24px var(--font-mono)', lineHeight: '24px', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }} />
+      {feedback}
     </div>
   );
 }
