@@ -13,7 +13,7 @@ Official React Bits component, downloaded 2026-11-12 from:
 - https://reactbits.dev/r/GradientASCII-TS-CSS.json
 - https://github.com/DavidHDev/react-bits
 
-`GradientASCII.css` is unmodified. `GradientASCII.tsx` adds optional `introDuration` (seconds, default 2.4) to the existing intro clock. `SiteBackground` enables a 3.2s intro and speed 1. The original TSX SHA256 is `99B516C3A8A8392C7D20114D22537F9FF2040D35AA79F16D6A6A17F409777C2E`.
+`GradientASCII.css` is unmodified. `GradientASCII.tsx` adds optional `introDuration` (seconds, default 2.4), adjusts the horizon field to reduce the dark center and edge hotspots, and adds a pale green central glow. `SiteBackground` enables a 3.2s intro and speed 1. The original TSX SHA256 is `99B516C3A8A8392C7D20114D22537F9FF2040D35AA79F16D6A6A17F409777C2E`.
 The adjacent `LICENSE.md` is the upstream MIT + Commons Clause license, downloaded from the author's repository. No additional runtime dependencies are required beyond React and browser WebGL2.
 
 Site-specific theme, animation strength and mounting belong to `../SiteBackground.tsx` and the `.site-background` rule in `../../styles/global.css`. Do not put portfolio-specific configuration into the upstream renderer. Without WebGL2, the site retains its CSS background and content.

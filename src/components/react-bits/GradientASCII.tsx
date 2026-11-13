@@ -169,13 +169,11 @@ vec3 encode(vec3 c) {
 vec3 horizon(vec2 p, float time, out float order) {
   float span = 0.5 * max(uAspect, 1.0);
   float x = p.x / span;
-  float arch = -0.17 - 0.2 * x * x + 0.02 * sin(time * 0.6);
+  float arch = -0.17 - 0.04 * x * x + 0.02 * sin(time * 0.6);
   float soft = mix(0.05, 0.22, uSoftness);
   float edge = p.y - arch;
   float rim = 0.38 * smoothstep(-soft, 0.42, edge);
-  vec2 sun = vec2(0.08 * sin(time * 0.31) * span, 0.58);
-  float spread = length((p - sun) / vec2(0.95 * span, 0.75));
-  float sky = mix(0.55, 1.0, smoothstep(0.2, 0.95, spread));
+  float sky = 0.82;
   order = clamp(edge * 1.3, 0.0, 1.0);
   return vec3(rim, sky, smoothstep(0.18, 0.62, edge));
 }
@@ -261,6 +259,11 @@ void main() {
   vec2 t = clamp(shape.xy * mix(0.7, 1.0, reveal), 0.0, 1.0);
   vec4 mixed = mix(tone(t.x), tone(t.y), shape.z);
   vec3 color = encode(labToRgb(mixed.rgb));
+  if (uShape == 0) {
+    vec2 sunrise = (p - vec2(0.0, 0.34)) / vec2(max(uAspect * 0.22, 0.2), 0.22);
+    float glow = exp(-dot(sunrise, sunrise) * 1.7) * 0.65;
+    color = mix(color, vec3(0.86, 1.0, 0.76), glow);
+  }
   float alpha = mixed.a * reveal;
   float dither = (hash12(gl_FragCoord.xy + uFrame * 13.7) - 0.5) / 255.0;
   outColor = clamp(vec4(color * alpha + dither, alpha + dither), 0.0, 1.0);
