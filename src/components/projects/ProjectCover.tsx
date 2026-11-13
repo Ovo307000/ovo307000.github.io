@@ -8,8 +8,9 @@ export function ProjectCover({ project }: { project: Project }) {
       <div className="project-cover-scene">
         <img src={covers[project.id]} alt="" loading="lazy" />
         <div className="project-cover-gradient" />
-        <p className="project-cover-brand">{project.coverBrand}</p>
+        <h3 className="project-cover-brand">{project.repositoryUrl ? <a href={project.repositoryUrl} target="_blank" rel="noreferrer">{project.coverBrand}</a> : project.coverBrand}</h3>
         <p className="project-cover-headline">{project.coverHeadline}</p>
+        <p className="project-cover-status">{project.status}</p>
       </div>
     </figure>
   );

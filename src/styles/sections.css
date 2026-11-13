@@ -9,17 +9,9 @@
 .about-section { padding-top: 64px; padding-bottom: 64px; }
 .about-composition { display: flex; flex-direction: column; gap: 40px; }
 .about-identity { display: flex; flex-direction: column; gap: 16px; }
-.about-label { font-size: 12px; line-height: 20px; }
-.about-focus { color: var(--text); font-size: 28px; line-height: 40px; font-weight: 700; }
 .about-description { max-width: 1000px; }
-.about-description, .about-feature-copy > p { color: var(--secondary); font-size: 16px; line-height: 28px; }
+.about-description { color: var(--secondary); font-size: 16px; line-height: 28px; }
 .about-features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; }
-.about-feature { display: flex; flex-direction: column; min-width: 0; gap: 12px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
-.about-feature-number { color: var(--accent); font-size: 12px; line-height: 20px; }
-.about-feature-copy { display: flex; flex: 1; flex-direction: column; gap: 12px; }
-.about-feature-heading { display: flex; align-items: center; gap: 12px; }
-.about-feature-heading h3 { font-size: 20px; line-height: 30px; }
-.about-feature-heading .icon { margin: 6px; }
 .skills-section { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 .skills-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
 .directory-item { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
@@ -63,7 +55,6 @@
   .about-section { padding-top: 32px; gap: 32px; }
   .about-section .section-heading { gap: 16px; }
   .about-composition { gap: 32px; }
-  .about-focus { font-size: 24px; line-height: 36px; }
   .about-features { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .skills-section { border: 0; }
   .skills-section .section-description { display: none; }

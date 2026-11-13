@@ -14,7 +14,6 @@ function PracticeList({ title, items }: { title: string; items: string[] }) {
 export function ProjectContent({ project }: { project: Project }) {
   return (
     <div className="project-content">
-      <div className="project-identity"><p className="mono muted">{project.englishName}</p><p>{project.status}</p></div>
       <p>{project.summary}</p>
       <PracticeList title={content.projectsSection.developmentLabel} items={project.developmentHighlights} />
       <PracticeList title={project.practiceLabel} items={project.highlights} />
