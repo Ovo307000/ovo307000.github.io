@@ -18,10 +18,9 @@ export function HeroTitle() {
       <div aria-hidden="true" className="hero-title-lines" style={{ '--title-units': maxCharacters + 0.3 } as CSSProperties}>
         {theme && !reduced ? (
           <TechText text={lines.join('\n')} fontFamily={theme.fontFamily} fontWeight={700} fontSize={theme.fontSize}
-            lineHeight={theme.lineHeight}
-            letterSpacing={0} align="left" color={theme.textColor} accentColor={theme.textColor}
-            reveal="letter" dashLength={4} dashGap={2} strokeWidth={1} specks={15}
-            sweep={false} intro="none" guides={false} className="hero-tech-effect" />
+            lineHeight={theme.lineHeight} letterSpacing={0} align="left" color={theme.textColor}
+            accentColor={theme.textColor} reveal="letter" dashLength={4} dashGap={2} strokeWidth={1}
+            specks={15} sweep intro="metrics" guides className="hero-tech-effect" />
         ) : lines.map(line => <span key={line} className="effect-title-fallback">{line}</span>)}
       </div>
     </div>

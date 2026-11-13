@@ -55,7 +55,7 @@ h2 { font-size: 34px; line-height: 49px; font-weight: 700; }
 h3 { font-size: 24px; line-height: 36px; font-weight: 500; }
 ::selection { background: var(--accent); color: var(--background); }
 .portfolio { position: relative; isolation: isolate; box-shadow: inset 0 0 0 1px var(--border); }
-.site-background { position: fixed; inset: 0; pointer-events: none; z-index: -1; opacity: .32; background: radial-gradient(ellipse at 50% 65%, var(--elevated), transparent 75%); }
+.site-background { position: fixed; inset: 0; pointer-events: none; z-index: -1; opacity: .4; background: radial-gradient(ellipse at 50% 65%, var(--elevated), transparent 75%); }
 .icon { flex-shrink: 0; object-fit: contain; }
 .command, .mono { font-family: var(--font-mono); }
 .command { color: var(--accent); font-size: 12px; line-height: 20px; }

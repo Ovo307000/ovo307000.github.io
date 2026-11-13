@@ -5,7 +5,7 @@
 .effect-title-fallback { display: block; font-size: min(1em, calc(100cqw / var(--title-max-units))); line-height: inherit; white-space: nowrap; }
 .hero-title-lines { position: relative; height: 2lh; width: min(100%, calc(var(--title-units) * var(--title-fit) * 1em)); }
 .hero-heading .hero-tech-effect { position: absolute; left: -5.5556%; top: -5%; width: 111.1112%; height: 110%; }
-.ascii-title-effect > div { font-size: calc(1em * var(--title-fit)) !important; justify-content: flex-start !important; padding-left: calc(.15em * var(--title-fit)); }
+.section-tech-effect { position: absolute; left: -5.5556%; top: -5%; width: 111.1112%; height: 110%; }
 
 @media (max-width: 767px) {
   .ascii-section-title { font-size: 26px; line-height: 39px; }

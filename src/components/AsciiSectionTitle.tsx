@@ -1,9 +1,7 @@
 import { useRef, type CSSProperties } from 'react';
 import { useReducedMotion } from 'motion/react';
-import ASCIIText from './react-bits/ASCIIText';
+import TechText from './react-bits/TechText';
 import { useTitleTheme } from './useTitleTheme';
-
-const ASCII_ROWS_PER_EM = 22;
 
 export function AsciiSectionTitle({ text }: { text: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -17,10 +15,10 @@ export function AsciiSectionTitle({ text }: { text: string }) {
       <div aria-hidden="true">
         {theme && !reduced ? (
           <span className="effect-title-line">
-            <ASCIIText text={text} fontFamily={theme.fontFamily} fontWeight={700} colors={theme.colors}
-              textColor={theme.textColor} asciiFontSize={Math.max(1.25, Math.min(3, theme.fontSize / ASCII_ROWS_PER_EM))} textScale={theme.textScale}
-              blocks={0.85} waves={0.15} waveSpeed={2.4} chroma={0.1} tilt={0.15} hueShift={0} scramble={0.3}
-              className="ascii-title-effect" style={{ left: 'calc(-.15em * var(--title-fit))', right: 'auto', width: '100%' }} />
+            <TechText text={text} fontFamily={theme.fontFamily} fontWeight={700} fontSize={theme.fontSize}
+              lineHeight={theme.lineHeight} letterSpacing={0} align="left" color={theme.textColor}
+              accentColor={theme.textColor} reveal="letter" dashLength={4} dashGap={2} strokeWidth={1}
+              specks={15} sweep={false} intro="assemble" className="section-tech-effect" />
           </span>
         ) : <span className="effect-title-fallback">{text}</span>}
       </div>
