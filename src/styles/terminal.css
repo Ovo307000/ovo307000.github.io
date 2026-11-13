@@ -40,6 +40,16 @@
 .terminal-input::placeholder { color: var(--muted); opacity: 1; }
 .terminal-input:focus::placeholder { color: transparent; opacity: 0; }
 .terminal-input-row { display: grid !important; grid-template-columns: max-content minmax(0, 1fr); row-gap: 4px !important; }
+.terminal-input-row:has(> .unlock-progress) { grid-template-rows: auto auto; }
+.terminal-input-row:has(> .unlock-progress) > input { grid-row: 2; }
+.terminal-input-row:has(> .unlock-progress) > span:first-child { grid-row: 2; }
+.terminal-input-row:has(> .unlock-progress) > .terminal-ghost,
+.terminal-input-row:has(> .unlock-progress) > .terminal-caret-track { grid-row: 2; }
+.terminal-input-row:has(> .unlock-progress) .terminal-caret { visibility: hidden; }
+.unlock-progress { grid-column: 1 / -1; grid-row: 1; margin-bottom: 12px; color: var(--secondary); font: 14px/24px var(--font-mono); }
+.unlock-progress-spinner::before { content: '[ | ]'; animation: unlock-spinner 800ms steps(1) infinite; }
+@keyframes unlock-spinner { 25% { content: '[ / ]'; } 50% { content: '[ - ]'; } 75% { content: '[ \\ ]'; } }
+@media (prefers-reduced-motion: reduce) { .unlock-progress-spinner::before { animation: none; } }
 .terminal-input-row > input { grid-column: 2; grid-row: 1; position: relative; z-index: 1; width: 100%; }
 .terminal-ghost { grid-column: 2; grid-row: 1; z-index: 1; min-width: 0; overflow: hidden; pointer-events: none; color: var(--muted); font: 16px/26px var(--font-mono); }
 .terminal-ghost > span { display: block; }

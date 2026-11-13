@@ -39,7 +39,7 @@ function observeInput(input: HTMLInputElement, shell: TerminalShell | undefined,
   return () => { for (const [name, listener] of listeners) { input.removeEventListener(name, listener); } };
 }
 
-export function useTerminalFeedback(root: RefObject<HTMLDivElement | null>, shell?: TerminalShell, secret = false) {
+export function useTerminalFeedback(root: RefObject<HTMLDivElement | null>, shell?: TerminalShell, secret = false, busy = false) {
   const [input, setInput] = useState<HTMLInputElement | null>(null);
   const [preview, setPreview] = useState<Preview>({ value: '', suffix: '', scrollLeft: 0, caretPrefix: null });
   const [noMatch, setNoMatch] = useState(false);
@@ -52,6 +52,9 @@ export function useTerminalFeedback(root: RefObject<HTMLDivElement | null>, shel
   }, [root, shell, secret]);
   const display = input?.parentElement ? createPortal(
     <>
+      {busy && <div className="unlock-progress" role="status" aria-label="Decrypting private data. Please wait.">
+        <span className="unlock-progress-spinner" aria-hidden="true" /> Decrypting private data...<br />Please wait.
+      </div>}
       <span className="terminal-ghost" aria-hidden="true">
         <span style={{ transform: `translateX(-${preview.scrollLeft}px)` }}>
           <span className="terminal-ghost-prefix">{preview.value}</span>{preview.suffix}

@@ -53,21 +53,36 @@ function useConsoleInput() {
   const consoleRef = useRef<ConsoleHandle>(null);
   const privacy = usePrivacyAccess();
   const privacyRef = useRef(privacy);
+  const attempt = useRef(0);
   privacyRef.current = privacy;
   const [directory, setDirectory] = useState('~');
   const [shell] = useState(() => createTerminalShell(() => privacyRef.current.openResume(), setDirectory,
     () => consoleRef.current?.clearStdout(), {
       unlock: (code) => {
         if (code === undefined) { privacyRef.current.requestUnlock(); return; }
+        const currentAttempt = ++attempt.current;
         void privacyRef.current.finishUnlock(code).then((success) => {
+          if (currentAttempt !== attempt.current) { return; }
           const message = success ? 'Access granted.' : 'Access denied. Check the share code and try again.';
           consoleRef.current?.pushToStdout(<TerminalAnsi text={message} />);
           consoleRef.current?.scrollToBottom();
         });
       }, lock: () => privacyRef.current.lock(),
     }));
-  const feedback = useTerminalFeedback(root, shell);
+  const feedback = useTerminalFeedback(root, shell, false, privacy.busy);
+  useLayoutEffect(() => {
+    const input = root.current?.querySelector('input');
+    if (input) { input.readOnly = privacy.busy; }
+  }, [privacy.busy]);
   function complete(event: KeyboardEvent<HTMLDivElement>) {
+    if (privacy.busy) {
+      if (event.key === 'Escape') {
+        attempt.current++;
+        privacy.lock();
+        consoleRef.current?.pushToStdout(<TerminalAnsi text="Unlock cancelled." />);
+      }
+      event.preventDefault(); event.stopPropagation(); return;
+    }
     if (event.nativeEvent.isComposing) { event.stopPropagation(); return; }
     const noMatch = handleConsoleKey(event, consoleRef.current, shell, directory);
     if (noMatch !== undefined) { feedback.setNoMatch(noMatch); }

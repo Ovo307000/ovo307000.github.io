@@ -13,7 +13,7 @@ function accessMessage(state: AccessState, previous: string): string {
   if (state.phase === 'public') {
     return previous ? colors.cyan('Private sections locked. Use unlock to enter a share code.') : '';
   }
-  if (state.busy) { return colors.cyan('Verifying share code...'); }
+  if (state.busy) { return ''; }
   if (state.error === 'empty-code') { return colors.red('Enter a share code before continuing.'); }
   if (state.error) { return colors.red('Access denied. Check the share code and try again. Esc cancels.'); }
   return colors.cyan('Protected data is locked. Enter your share code below. Esc cancels.');
