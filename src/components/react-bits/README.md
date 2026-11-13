@@ -33,6 +33,6 @@ Official TS-CSS sources downloaded 2026-11-12 through the same global skill:
 - https://reactbits.dev/r/TechText-TS-CSS.json
 - https://reactbits.dev/r/ASCIIText-TS-CSS.json
 
-TechText uses Canvas2D without additional runtime dependencies. Its CSS is unmodified; the TSX has a local multiline extension with two-dimensional hit testing. `../HeroTitle.tsx` uses the metrics intro, sweep and guides; `../AsciiSectionTitle.tsx` uses the assemble intro without automatic sweep. The upstream source was rechecked against the registry on 2026-11-13 and remains single-line (SHA256 DAEB82A3D54CCA43865437ED35D4059381B9A6E99D95403A37E270ABC637C05C).
+TechText uses Canvas2D without additional runtime dependencies. Its CSS is unmodified; the TSX has a local multiline extension with two-dimensional hit testing. `../HeroTitle.tsx` uses the metrics intro and sweep without persistent guides; `../AsciiSectionTitle.tsx` uses the assemble intro without automatic sweep. The upstream source was rechecked against the registry on 2026-11-13 and remains single-line (SHA256 DAEB82A3D54CCA43865437ED35D4059381B9A6E99D95403A37E270ABC637C05C).
 
 Both adapters wait for the existing Chinese font, preserve semantic headings and plain server-rendered text without JavaScript, and use plain headings for reduced motion.

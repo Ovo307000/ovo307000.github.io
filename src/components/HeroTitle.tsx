@@ -20,7 +20,7 @@ export function HeroTitle() {
           <TechText text={lines.join('\n')} fontFamily={theme.fontFamily} fontWeight={700} fontSize={theme.fontSize}
             lineHeight={theme.lineHeight} letterSpacing={0} align="left" color={theme.textColor}
             accentColor={theme.textColor} reveal="letter" dashLength={4} dashGap={2} strokeWidth={1}
-            specks={15} sweep intro="metrics" guides className="hero-tech-effect" />
+            specks={15} sweep intro="metrics" guides={false} className="hero-tech-effect" />
         ) : lines.map(line => <span key={line} className="effect-title-fallback">{line}</span>)}
       </div>
     </div>
