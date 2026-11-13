@@ -18,13 +18,14 @@ function requestUnlock(section: ProtectedSection, returnTarget: RefObject<Protec
   access.showUnlock();
 }
 
-async function finishUnlock(code: string, returnTarget: RefObject<ProtectedSection>, setTarget: SetTarget, access: Access): Promise<void> {
-  if (!await access.unlock(code)) { return; }
+async function finishUnlock(code: string, returnTarget: RefObject<ProtectedSection>, setTarget: SetTarget, access: Access): Promise<boolean> {
+  if (!await access.unlock(code)) { return false; }
   if (returnTarget.current === 'resume') { setTarget({ kind: 'resume' }); }
   else {
     setTarget(null);
     requestAnimationFrame(() => document.getElementById(returnTarget.current)?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
   }
+  return true;
 }
 
 export function usePortfolioPrivacy(setTarget: SetTarget) {

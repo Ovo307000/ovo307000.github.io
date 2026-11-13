@@ -4,9 +4,9 @@ const { join } = require('node:path');
 const { createTerminalShell } = require(join(process.env.TERMINAL_TEST_BUILD, 'src/lib/terminalShell.js'));
 const strip = (value) => String(value).replace(/\x1b\[[0-9;]*m/g, '');
 function makeShell() {
-  const effects = { resume: 0, unlock: 0, lock: 0, clear: 0, directory: '~' };
+  const effects = { resume: 0, unlock: 0, code: undefined, lock: 0, clear: 0, directory: '~' };
   const shell = createTerminalShell(() => effects.resume++, (path) => { effects.directory = path; },
-    () => effects.clear++, { unlock: () => effects.unlock++, lock: () => effects.lock++ });
+    () => effects.clear++, { unlock: (code) => { effects.unlock++; effects.code = code; }, lock: () => effects.lock++ });
   return { ...shell, effects };
 }
 
@@ -54,7 +54,7 @@ test('options, positions and dynamic paths share one contract', () => {
 
 test('invalid arguments never trigger commands and supported behavior is retained', () => {
   const shell = makeShell();
-  for (const command of ['unlock extra', 'lock extra', 'clear extra', 'pwd extra', 'cat', 'open',
+  for (const command of ['unlock extra extra', 'lock extra', 'clear extra', 'pwd extra', 'cat', 'open',
     'whoami --missing', 'help invalid', 'ls --missing', 'cd projects interests']) {
     assert.match(strip(shell.execute(command)), /Usage:/, command);
   }
@@ -69,6 +69,17 @@ test('invalid arguments never trigger commands and supported behavior is retaine
   assert.deepEqual([shell.effects.resume, shell.effects.unlock, shell.effects.lock, shell.effects.clear], [1, 1, 1, 1]);
   assert.equal(shell.execute('open ./portfolio').language, 'markdown');
   assert.equal(shell.execute('cd'), '');
+});
+
+test('unlock accepts a code, retains the prompt, and commands provide individual help', () => {
+  const shell = makeShell();
+  for (const name of Object.keys(shell.commands)) {
+    assert.ok(strip(shell.execute(`${name} --help`)).includes(shell.commands[name].description), name);
+  }
+  shell.execute('unlock -example');
+  assert.equal(shell.effects.code, '-example');
+  shell.execute('unlock');
+  assert.equal(shell.effects.code, undefined);
 });
 
 test('completion preserves indentation and does not invent arguments for no-argument commands', () => {

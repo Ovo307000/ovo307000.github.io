@@ -15,7 +15,9 @@ function submitCommand(terminal: ConsoleHandle | null, shell: ReturnType<typeof 
   if (!terminal || !input.value.trim()) { return; }
   const command = input.value;
   const prompt = directory === '~' ? '$' : `${directory} $`;
-  terminal.pushToStdout(<TerminalAnsi text={`${terminalColors.green(prompt)} ${command}`} />, { rawInput: command });
+  const sensitive = /^\s*unlock\s+\S/.test(command) && !/^\s*unlock\s+(?:-h|--help)\s*$/.test(command);
+  if (sensitive) { terminal.pushToStdout(<TerminalAnsi text={`${terminalColors.green(prompt)} unlock ••••••`} />); }
+  else { terminal.pushToStdout(<TerminalAnsi text={`${terminalColors.green(prompt)} ${command}`} />, { rawInput: command }); }
   const result = shell.execute(command);
   if (result) { terminal.pushToStdout(typeof result === 'object' ? <TerminalCode output={result} /> : <TerminalAnsi text={result} />); }
   terminal.clearInput();
@@ -55,7 +57,14 @@ function useConsoleInput() {
   const [directory, setDirectory] = useState('~');
   const [shell] = useState(() => createTerminalShell(() => privacyRef.current.openResume(), setDirectory,
     () => consoleRef.current?.clearStdout(), {
-      unlock: () => privacyRef.current.requestUnlock(), lock: () => privacyRef.current.lock(),
+      unlock: (code) => {
+        if (code === undefined) { privacyRef.current.requestUnlock(); return; }
+        void privacyRef.current.finishUnlock(code).then((success) => {
+          const message = success ? 'Access granted.' : 'Access denied. Check the share code and try again.';
+          consoleRef.current?.pushToStdout(<TerminalAnsi text={message} />);
+          consoleRef.current?.scrollToBottom();
+        });
+      }, lock: () => privacyRef.current.lock(),
     }));
   const feedback = useTerminalFeedback(root, shell);
   function complete(event: KeyboardEvent<HTMLDivElement>) {

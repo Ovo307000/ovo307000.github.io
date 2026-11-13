@@ -10,7 +10,7 @@ export interface PrivacyAccessValue {
   busy: boolean;
   error: PrivateResumeState['error'];
   requestUnlock: (section?: ProtectedSection) => void;
-  finishUnlock: (code: string) => Promise<void>;
+  finishUnlock: (code: string) => Promise<boolean>;
   openResume: () => void;
   lock: () => void;
 }

@@ -83,7 +83,7 @@ function createCommands(files: TerminalFileSystem, onHelp: TerminalCommand['fn']
 }
 
 export function createTerminalShell(onResume: () => void, onDirectory: (path: string) => void,
-    onClear: () => void, privacy: { unlock: () => void; lock: () => void }) {
+    onClear: () => void, privacy: { unlock: (code?: string) => void; lock: () => void }) {
   const files = new TerminalFileSystem(onResume, onDirectory);
   let helpCycle = 0;
   function help(...args: string[]) {
@@ -95,7 +95,8 @@ export function createTerminalShell(onResume: () => void, onDirectory: (path: st
   }
   const commands = createCommands(files, help);
   commands.clear = { description: 'Clear the terminal', fn: () => { onClear(); return ''; } };
-  commands.unlock = { description: 'Unlock private sections', fn: () => { privacy.unlock(); return ''; } };
+  commands.unlock = { description: 'Unlock private sections; omit code to open a secure prompt',
+    parameters: [{ name: 'share-code' }], fn: code => { privacy.unlock(code); return ''; } };
   commands.lock = { description: 'Lock private sections', fn: () => { privacy.lock(); return ''; } };
   function complete(input: string) {
     return completeTerminalInput(input, commands, parent => files.entries(files.path(parent), true));
@@ -104,6 +105,13 @@ export function createTerminalShell(onResume: () => void, onDirectory: (path: st
     const [name, ...args] = input.trim().split(/\s+/);
     if (!name) { return ''; }
     if (name !== 'help') { helpCycle = 0; }
+    if (name === 'help' && args.length === 1 && args[0] === '--help') { return help('-h'); }
+    if (name === 'unlock' && args.length === 1 && !['-h', '--help'].includes(args[0])) {
+      privacy.unlock(args[0]); return '';
+    }
+    if (name !== 'help' && args.length === 1 && ['-h', '--help'].includes(args[0]) && Object.hasOwn(commands, name)) {
+      return colors.cyan(terminalHelp({ [name]: commands[name] }));
+    }
     return executeTerminalCommand(commands, name, args);
   }
   return { commands, complete, execute };
