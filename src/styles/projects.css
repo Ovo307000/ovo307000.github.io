@@ -20,6 +20,15 @@
 .project-card--home .project-mobile-trigger, .project-teaser, .projects-mobile-intro { display: none; }
 .project-card--detail .project-content { display: flex; }
 
+@supports (grid-template-rows: subgrid) {
+  @media (min-width: 768px) {
+    .projects-grid { row-gap: 16px; }
+    .project-card--home { display: grid; grid-template-rows: subgrid; grid-row: span 5; padding-bottom: 40px; }
+    .project-card--home .project-content { display: grid; grid-template-rows: subgrid; grid-row: span 4; }
+    .project-card--home .project-content > * { align-self: start; }
+  }
+}
+
 @media (max-width: 767px) {
   .projects-section .section-description { display: none; }
   .projects-mobile-intro { display: block; font-size: 14px; line-height: 24px; }
