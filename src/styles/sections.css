@@ -2,7 +2,6 @@
 .hero .hero-command { font-size: 15px; line-height: 26px; }
 .hero-composition { display: flex; align-items: center; gap: 56px; position: relative; }
 .hero-copy { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 24px; }
-.hero-eyebrow { font-size: 12px; line-height: 20px; color: var(--accent); }
 .hero-heading { font-size: 68px; line-height: 88px; }
 .hero-summary { font-size: 16px; line-height: 28px; color: var(--secondary); }
 .hero-actions { display: flex; gap: 12px; }
@@ -60,6 +59,7 @@
   .about-section .section-heading { gap: 16px; }
   .about-composition { gap: 32px; }
   .about-features { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .about-features h3 { font-size: 24px; line-height: 36px; }
   .skills-section { border: 0; }
   .skills-section .section-description { display: none; }
   .skills-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; }

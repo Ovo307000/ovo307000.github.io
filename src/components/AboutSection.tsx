@@ -12,8 +12,8 @@ export function AboutSection() {
           <p className="about-description">{about.description}</p>
         </div>
         <div className="about-features">
-          <DirectoryItem className="interest-item" item={{ number: '01', icon: 'code', title: about.developmentTitle, description: about.development, tools: about.developmentTags }} />
-          <DirectoryItem className="interest-item" item={{ number: '02', icon: 'terminal-small', title: about.explorationTitle, description: about.exploration, tools: about.explorationTags }} />
+          <DirectoryItem item={{ number: '01', icon: 'code', title: about.developmentTitle, description: about.development, tools: about.developmentTags }} />
+          <DirectoryItem item={{ number: '02', icon: 'terminal-small', title: about.explorationTitle, description: about.exploration, tools: about.explorationTags }} />
         </div>
       </div>
     </section>
