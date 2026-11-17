@@ -12,7 +12,6 @@ export function HeroSection() {
       <p className="command hero-command">{content.retro.heroCommand}</p>
       <div className="hero-composition">
         <div className="hero-copy">
-          <p className="hero-eyebrow">{content.hero.eyebrow}</p>
           <HeroTitle />
           <p className="hero-summary">{content.hero.summary}</p>
           <div className="hero-actions">

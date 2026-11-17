@@ -13,7 +13,6 @@
     "footerPrompt": "END OF FILE / 保持好奇，继续探索。"
   },
   "hero": {
-    "eyebrow": "Web 与 Java 项目开发 / 应用部署与运维",
     "title": "从应用开发，",
     "accent": "到部署与运维。",
     "summary": "计算机科学与技术专业本科，有 Java、TypeScript 项目开发与 Linux 应用部署实践。项目涉及业务平台、Web 应用与模组开发工作区，也关注 Docker 部署、日志排查和脚本辅助。",
