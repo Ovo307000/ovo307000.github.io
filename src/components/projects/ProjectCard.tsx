@@ -7,10 +7,9 @@ import { ProjectContent } from './ProjectContent';
 
 const PREVIEW_TIMEOUT_MS = 5000;
 
-function ProjectPreview({ url, connectionOnly, desktopOnly, children }: {
+function ProjectPreview({ url, connectionOnly, children }: {
   url: string;
   connectionOnly?: boolean;
-  desktopOnly?: boolean;
   children: ReactNode;
 }) {
   const [available, setAvailable] = useState(false);
@@ -35,7 +34,7 @@ function ProjectPreview({ url, connectionOnly, desktopOnly, children }: {
   if (!available) return null;
 
   return (
-    <Button asChild variant="outline" className={desktopOnly ? 'project-preview project-preview--desktop' : 'project-preview'}>
+    <Button asChild variant="outline" className="project-preview">
       <a href={url} target="_blank" rel="noreferrer">
         {children}<ArrowUpRight size={16} aria-hidden="true" />
       </a>
@@ -51,12 +50,9 @@ function ProjectPreviews({ project }: { project: Project }) {
   return (
     <div className="project-previews">
       {previewUrl && <ProjectPreview key={previewUrl} url={previewUrl} connectionOnly={previewConnectionOnly}>
-        {previewAdminUrl ? <>
-          <span className="project-preview-label-desktop">{tenantPreviewAction}</span>
-          <span className="project-preview-label-mobile">{previewAction}</span>
-        </> : previewAction}
+        {previewAdminUrl ? tenantPreviewAction : previewAction}
       </ProjectPreview>}
-      {previewAdminUrl && <ProjectPreview key={previewAdminUrl} url={previewAdminUrl} desktopOnly>{adminPreviewAction}</ProjectPreview>}
+      {previewAdminUrl && <ProjectPreview key={previewAdminUrl} url={previewAdminUrl}>{adminPreviewAction}</ProjectPreview>}
     </div>
   );
 }
