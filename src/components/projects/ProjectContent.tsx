@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { content, type Project } from '../../lib/content';
 import { assets } from '../../lib/assets';
 import { TagList } from '../ui/TagList';
@@ -11,13 +12,17 @@ function PracticeList({ title, items }: { title: string; items: string[] }) {
   );
 }
 
-export function ProjectContent({ project }: { project: Project }) {
+export function ProjectContent({ project, teaser, children }: { project: Project; teaser?: ReactNode; children?: ReactNode }) {
   return (
     <div className="project-content">
-      <p>{project.summary}</p>
+      <div className="project-intro">
+        <p className="project-summary">{project.summary}</p>
+        {teaser}
+      </div>
       <PracticeList title={content.projectsSection.developmentLabel} items={project.developmentHighlights} />
       <PracticeList title={project.practiceLabel} items={project.highlights} />
       <TagList tags={project.technologies} />
+      {children}
     </div>
   );
 }
