@@ -43,14 +43,14 @@ function ProjectPreview({ url, connectionOnly, children }: {
 }
 
 function ProjectPreviews({ project }: { project: Project }) {
-  const { previewUrl, previewAdminUrl, previewConnectionOnly } = project;
-  const { previewAction, tenantPreviewAction, adminPreviewAction } = content.projectsSection;
+  const { previewUrl, previewLabel, previewAdminUrl, previewConnectionOnly } = project;
+  const { previewAction, adminPreviewAction } = content.projectsSection;
   if (!previewUrl && !previewAdminUrl) return null;
 
   return (
     <div className="project-previews">
       {previewUrl && <ProjectPreview key={previewUrl} url={previewUrl} connectionOnly={previewConnectionOnly}>
-        {previewAdminUrl ? tenantPreviewAction : previewAction}
+        {previewLabel ?? previewAction}
       </ProjectPreview>}
       {previewAdminUrl && <ProjectPreview key={previewAdminUrl} url={previewAdminUrl}>{adminPreviewAction}</ProjectPreview>}
     </div>
